@@ -9,13 +9,16 @@ plugins {
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
+    def major = 1
+    def minor = 0
+    def patch = 0
 
     defaultConfig {
         applicationId "com.sillylife.knocknock"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode major * 10000 + minor * 100 + patch
+        versionName "$major.$minor.$patch"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -95,7 +98,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-dynamic-links-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+//    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
 
