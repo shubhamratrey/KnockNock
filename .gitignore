@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+.idea
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -13,3 +14,10 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/google-services.json
+/app/src/androidTest/java/com/sillylife/knocknock/
+/app/src/androidTest/java/com/sillylife/knocknock/ExampleInstrumentedTest.kt
+/app/src/test/java/com/sillylife/knocknock/
+/gradle/wrapper/
+/gradlew
+/gradlew.bat
