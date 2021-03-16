@@ -50,6 +50,7 @@ object Constants {
     const val IMPRESSION = "impression"
     const val KEY_EVENT_EXTRA = "key_event_extra"
     const val IMMERSIVE_FLAG_TIMEOUT = 500L
+    const val RECENTLY_LOWER_LIMIT = 4
     val EXTENSION_WHITELIST = arrayOf("JPG")
 
     interface HomeType {

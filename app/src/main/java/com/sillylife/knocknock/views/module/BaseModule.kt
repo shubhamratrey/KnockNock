@@ -10,8 +10,9 @@ import com.sillylife.knocknock.services.AppDisposable
 open class BaseModule {
     val application = MainApplication.getInstance()
     val apiService = application.getAPIService()
+    val localDatabase = application.getKnockNockDatabase()
     var appDisposable = AppDisposable()
-    var database = Firebase.database.reference
+    var firebaseDatabase = Firebase.database.reference
     var messagesListener: ValueEventListener? = null
 
     fun onDestroy() {
@@ -19,7 +20,7 @@ open class BaseModule {
             appDisposable.dispose()
         }
         if (messagesListener != null) {
-            database.removeEventListener(messagesListener!!)
+            firebaseDatabase.removeEventListener(messagesListener!!)
         }
     }
 

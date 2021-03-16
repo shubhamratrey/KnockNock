@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
+import com.sillylife.knocknock.constants.Constants.RECENTLY_LOWER_LIMIT
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.utils.ImageManager
 import kotlinx.android.extensions.LayoutContainer
@@ -21,8 +22,6 @@ class ContactsAdapter(val context: Context,
                       val listener: ContactsAdapterListener) : RecyclerView.Adapter<ContactsAdapter.ViewHolder>() {
     var page_no = 2
     var oldCount = 0
-    val LOWER_LIMIT = 4
-    val UPPER_LIMIT = 8
     var commonItemList = ArrayList<Any>()
 
     init {
@@ -42,7 +41,7 @@ class ContactsAdapter(val context: Context,
         when (layoutManager) {
             Constants.LayoutManager.GRID_LAYOUT_MANAGER -> {
                 holder.contactImageIv?.setImageResource(R.drawable.alpha_white_solid_circle)
-                ImageManager.loadImage(holder.contactImageIv, contact.image)
+                ImageManager.loadImageCircular(holder.contactImageIv, contact.image)
                 holder.contactLastConnected?.text = contact.lastConnectedDateString()
             }
             Constants.LayoutManager.LINEAR_LAYOUT_MANAGER -> {
@@ -75,8 +74,8 @@ class ContactsAdapter(val context: Context,
     }
 
     override fun getItemCount(): Int {
-        return if (layoutManager == Constants.LayoutManager.GRID_LAYOUT_MANAGER && commonItemList.size > LOWER_LIMIT) {
-            LOWER_LIMIT
+        return if (layoutManager == Constants.LayoutManager.GRID_LAYOUT_MANAGER && commonItemList.size > RECENTLY_LOWER_LIMIT) {
+            RECENTLY_LOWER_LIMIT
         } else {
             commonItemList.size
         }
@@ -88,21 +87,6 @@ class ContactsAdapter(val context: Context,
     }
 
     fun updateRecentlyConnected(contact: Contact) {
-//        commonItemList.clear()
-//        commonItemList.addAll(ContactsHelper.getRecentlyConnectedContactList())
-//        notifyDataSetChanged()
-//        if (items.size > UPPER_LIMIT) {
-//            for (i in items.indices.reversed() - LOWER_LIMIT) {
-//                items.removeAt(i)
-//                Log.d("updateRec_items", i.toString() + "  size - " + items.size)
-//            }
-//        }
-//        if (commonItemList.size > UPPER_LIMIT) {
-//            for (i in commonItemList.indices.reversed() - LOWER_LIMIT) {
-//                commonItemList.removeAt(i)
-//                Log.d("updateRec_commonitems", i.toString() + "  size - " + commonItemList.size)
-//            }
-//        }
         var lastIndex = 0
         for (i in commonItemList.indices) {
             val a = commonItemList[i]

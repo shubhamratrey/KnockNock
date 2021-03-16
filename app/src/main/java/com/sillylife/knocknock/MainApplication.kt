@@ -3,6 +3,7 @@ package com.sillylife.knocknock
 import android.app.Application
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import com.sillylife.knocknock.database.KnockNockDatabase
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.services.APIService
@@ -34,6 +35,8 @@ class MainApplication : Application(), ConnectivityReceiver.ConnectivityReceiver
     private var mIAPIService: IAPIService? = null
     @Volatile
     private var mIAPIServiceCache: IAPIService? = null
+    @Volatile
+    private var mKnockNockDatabase: KnockNockDatabase? = null
 
     private var connectivityReceiver: ConnectivityReceiver? = null
 
@@ -78,6 +81,14 @@ class MainApplication : Application(), ConnectivityReceiver.ConnectivityReceiver
 
         }
         return if (cacheEnabled) mIAPIServiceCache!! else mIAPIService!!
+    }
+
+    @Synchronized
+    fun getKnockNockDatabase(): KnockNockDatabase? {
+        if (mKnockNockDatabase == null) {
+            mKnockNockDatabase = KnockNockDatabase.getInstance(this)
+        }
+        return mKnockNockDatabase
     }
 
 }

@@ -4,7 +4,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.sillylife.knocknock.constants.NetworkConstants
-import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.responses.HomeDataResponse
 import com.sillylife.knocknock.services.CallbackWrapper
@@ -47,11 +46,11 @@ class HomeFragmentModule(val listener: APIModuleListener) : BaseModule() {
                 listener.onRealTimeOrderUpdateFailure(error.message)
             }
         }
-        database.child("delivery_order_request/executive_id/${executiveId}").addValueEventListener(messagesListener!!)
+        firebaseDatabase.child("delivery_order_request/executive_id/${executiveId}").addValueEventListener(messagesListener!!)
     }
 
     fun getPhoneContacts() {
-        listener.onContactPhoneSyncSuccess(ContactsHelper.getPhoneContactList())
+        listener.onContactPhoneSyncSuccess(ArrayList())
     }
 
 

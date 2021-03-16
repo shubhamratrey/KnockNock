@@ -67,13 +67,13 @@ dependencies {
     kapt 'androidx.room:room-compiler:2.2.6'
 
     //Android LifeCycle
-    api 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    api 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
-    api 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0'
-    api 'androidx.lifecycle:lifecycle-common-java8:2.3.0'
-    api "androidx.lifecycle:lifecycle-livedata-core-ktx:2.3.0"
-    api "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
-    api "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.3.0"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.3.0'
+//    api "androidx.lifecycle:lifecycle-livedata-core-ktx:2.3.0"
+//    api "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
+//    api "androidx.lifecycle:lifecycle-reactivestreams-ktx:2.3.0"
 
 
     //Rx

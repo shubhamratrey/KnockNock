@@ -43,6 +43,12 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".services.ContactWatchService"
+            android:enabled="true"
+            android:process=":KnockNockContactWatchService"
+            android:exported="false" />
     </application>
 
 </manifest>
