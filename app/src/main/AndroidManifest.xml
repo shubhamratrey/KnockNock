@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sillylife.knocknock">
 
+    <!-- Include required permissions for Google Mobile Ads to run. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".MainApplication"
@@ -14,13 +17,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KnockNock"
         android:usesCleartextTraffic="true">
-        <activity android:name=".views.activity.MainActivity">
+
+        <receiver android:name=".views.fragments.RecentlyKnocked">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/recently_knocked_info" />
+        </receiver>
+
+        <activity
+            android:name=".views.activity.MainActivity"
+            android:theme="@style/Theme.KnockNock.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service android:name=".services.FirebaseMessaging">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

@@ -49,4 +49,12 @@ interface IAPIService {
     ): Observable<Response<GenericResponse>>
 
 
+    @FormUrlEncoded
+    @POST("${NetworkConstants.V1}/order/{order_id}/update-item-status/")
+    fun updateOrderItem(@Path("order_id") orderId: Int,
+                        @Field("accepted_order_item_ids") accepted_ids: List<Int>,
+                        @Field("rejected_order_item_ids") rejected_ids: List<Int>): Observable<Response<GenericResponse>>
+
+
+
 }

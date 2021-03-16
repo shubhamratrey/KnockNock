@@ -14,10 +14,10 @@ import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.services.FirebaseAuthUserManager
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
+import com.sillylife.knocknock.views.fragments.HomeFragment
 import com.sillylife.knocknock.views.module.MainActivityModule
 import com.sillylife.knocknock.views.viewmodal.MainActivityViewModel
 import com.sillylife.knocknock.views.viewmodelfactory.ActivityViewModelFactory
-import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
@@ -57,14 +57,17 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
             )
         } else {
             if (SharedPreferenceManager.getUser() != null) {
+                replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
                 Toast.makeText(this, "Already Logged In", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel?.getMe()
             }
         }
-        ringBell?.setOnClickListener {
-            viewModel?.ringBell(1)
-        }
+//        ringBell?.setOnClickListener {
+//            viewModel?.ringBell(1)
+//        }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -46,6 +46,10 @@ object CommonUtil {
         return empty
     }
 
+    fun textIsNotEmpty(value: String?): Boolean {
+        return !textIsEmpty(value)
+    }
+
     @Throws(IOException::class)
     fun createImageFile(context: Context): File {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())

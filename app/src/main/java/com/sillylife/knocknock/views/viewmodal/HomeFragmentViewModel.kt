@@ -1,5 +1,6 @@
 package com.sillylife.knocknock.views.viewmodal
 
+import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.HomeDataResponse
 import com.sillylife.knocknock.views.fragments.BaseFragment
@@ -11,17 +12,6 @@ class HomeFragmentViewModel(fragment: BaseFragment) : BaseViewModel(), HomeFragm
     val module = HomeFragmentModule(this)
     val listener = fragment as HomeFragmentModule.APIModuleListener
 
-    override fun onUpdateRequestUpdateApiSuccess(response: GenericResponse?) {
-        listener.onUpdateRequestUpdateApiSuccess(response)
-    }
-
-    override fun onUpdateDutyStatusApiSuccess(response: GenericResponse?) {
-        listener.onUpdateDutyStatusApiSuccess(response)
-    }
-
-    override fun onGetDutyStatusApiSuccess(response: GenericResponse?) {
-        listener.onGetDutyStatusApiSuccess(response)
-    }
 
     override fun onApiFailure(statusCode: Int, message: String) {
         listener.onApiFailure(statusCode, message)
@@ -39,6 +29,10 @@ class HomeFragmentViewModel(fragment: BaseFragment) : BaseViewModel(), HomeFragm
         listener.onHomeApiSuccess(response)
     }
 
+    override fun onContactPhoneSyncSuccess(contacts: ArrayList<Contact>) {
+        listener.onContactPhoneSyncSuccess(contacts)
+    }
+
     override fun setViewModel(): BaseModule {
         return module
     }
@@ -50,5 +44,9 @@ class HomeFragmentViewModel(fragment: BaseFragment) : BaseViewModel(), HomeFragm
 
     fun getRealTimeUpdates(executiveId: Int) {
         module.getRealTimeUpdates(executiveId)
+    }
+
+    fun getPhoneContacts() {
+        module.getPhoneContacts()
     }
 }

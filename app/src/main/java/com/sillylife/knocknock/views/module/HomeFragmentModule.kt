@@ -4,7 +4,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.sillylife.knocknock.constants.NetworkConstants
-import com.sillylife.knocknock.models.responses.GenericResponse
+import com.sillylife.knocknock.helpers.ContactsHelper
+import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.responses.HomeDataResponse
 import com.sillylife.knocknock.services.CallbackWrapper
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,7 +38,7 @@ class HomeFragmentModule(val listener: APIModuleListener) : BaseModule() {
     fun getRealTimeUpdates(executiveId: Int) {
         messagesListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.hasChild("status") && dataSnapshot.hasChild("request_id")){
+                if (dataSnapshot.hasChild("status") && dataSnapshot.hasChild("request_id")) {
                     listener.onRealTimeOrderUpdates(dataSnapshot.child("status").value.toString(), dataSnapshot.child("request_id").value.toString().toInt())
                 }
             }
@@ -49,14 +50,16 @@ class HomeFragmentModule(val listener: APIModuleListener) : BaseModule() {
         database.child("delivery_order_request/executive_id/${executiveId}").addValueEventListener(messagesListener!!)
     }
 
+    fun getPhoneContacts() {
+        listener.onContactPhoneSyncSuccess(ContactsHelper.getPhoneContactList())
+    }
+
 
     interface APIModuleListener {
         fun onHomeApiSuccess(response: HomeDataResponse?)
-        fun onUpdateRequestUpdateApiSuccess(response: GenericResponse?)
-        fun onUpdateDutyStatusApiSuccess(response: GenericResponse?)
-        fun onGetDutyStatusApiSuccess(response: GenericResponse?)
+        fun onContactPhoneSyncSuccess(contacts: ArrayList<Contact>)
         fun onApiFailure(statusCode: Int, message: String)
-        fun onRealTimeOrderUpdates(status: String, requestId:Int)
+        fun onRealTimeOrderUpdates(status: String, requestId: Int)
         fun onRealTimeOrderUpdateFailure(message: String)
     }
 }

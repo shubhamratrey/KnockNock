@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">KnockNock</string>
+
+    <plurals name="day_count_string">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <plurals name="hour_count_string">
+        <item quantity="one">%d hour ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
+    <plurals name="min_count_string">
+        <item quantity="one">%d min ago</item>
+        <item quantity="other">%d mins ago</item>
+    </plurals>
+    <plurals name="second_count_string">
+        <item quantity="one">%d second ago</item>
+        <item quantity="other">%d seconds ago</item>
+    </plurals>
+
+    <string name="just_now">Just now</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="today">Today</string>
+    <string name="sec">sec</string>
+    <string name="min">min</string>
+    <string name="hour">hr</string>
+
 </resources>

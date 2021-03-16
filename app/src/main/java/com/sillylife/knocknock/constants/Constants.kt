@@ -1,5 +1,8 @@
 package com.sillylife.knocknock.constants
 
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+
 
 object Constants {
 
@@ -44,15 +47,22 @@ object Constants {
     const val SET_AS_DEFAULT_ADDRESS: String = "set_as_default_address"
 
     const val KEY_EVENT_ACTION = "key_event_action"
+    const val IMPRESSION = "impression"
     const val KEY_EVENT_EXTRA = "key_event_extra"
     const val IMMERSIVE_FLAG_TIMEOUT = 500L
     val EXTENSION_WHITELIST = arrayOf("JPG")
 
-    interface HOME_TYPE {
+    interface HomeType {
         companion object {
-            const val REVENUE = "revenue"
-            const val PRODUCT_ORDER_LAYOUT = "product_order_layout"
-            const val BEST_SELLING_PRODUCTS = "best_selling_products"
+            const val RECENTLY_CONNECTED = "recently_connected"
+            const val CONTACT_LIST = "contact_list"
+        }
+    }
+
+    interface LayoutManager {
+        companion object {
+            const val GRID_LAYOUT_MANAGER = "GridLayoutManager"
+            const val LINEAR_LAYOUT_MANAGER = "LinearLayoutManager"
         }
     }
 
