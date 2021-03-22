@@ -51,33 +51,8 @@ object Constants {
     const val IMPRESSION = "impression"
     const val KEY_EVENT_EXTRA = "key_event_extra"
     const val IMMERSIVE_FLAG_TIMEOUT = 500L
-    const val RECENTLY_LOWER_LIMIT = 4
+    const val RECENTLY_LOWER_LIMIT = 6
     val EXTENSION_WHITELIST = arrayOf("JPG")
-
-    interface HomeType {
-        companion object {
-            const val RECENTLY_CONNECTED_CONTACTS = "recently_connected_contacts"
-            const val AVAILABLE_CONTACTS = "available_contacts"
-        }
-    }
-
-    interface ContactLayoutType {
-        companion object {
-            const val VERTICAL_LAYOUT = "vertical_layout"
-            const val HORIZONTAL_LAYOUT = "horizontal_layout"
-        }
-    }
-
-    interface ORDER_STATUS {
-        companion object {
-            const val ON_WAY = "on-way"
-            const val ARRIVED_AT_SHOP = "arrived-at-shop"
-            const val ORDER_PICKED = "order-picked"
-            const val ARRIVED_AT_CONSUMER = "arrived-at-consumer"
-            const val DELIVERED = "delivered"
-            const val NOT_DELIVERED = "not-delivered"
-        }
-    }
 
     interface SocialLinks {
         companion object {

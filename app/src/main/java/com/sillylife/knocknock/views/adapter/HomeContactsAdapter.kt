@@ -72,20 +72,21 @@ class HomeContactsAdapter(val context: Context,
                     holder.tvContactPlaceholder.visibility = View.VISIBLE
                 }
 
-                holder.tvPrimaryText?.text = contact.name
+                holder.tvPrimaryText?.text = contact.name?.split(' ')!![0]
                 holder.tvSecondaryText?.text = contact.lastConnectedDateString()
 
                 holder.containerView.setOnClickListener {
-                    if (contact.availableOnPlatform != null && contact.availableOnPlatform!!) {
-                        listener.onContactClicked(contact, position, holder.containerView)
-                    }
+//                    if (contact.availableOnPlatform != null && contact.availableOnPlatform!!) {
+//                        listener.onContactClicked(contact, position, holder.containerView)
+//                    }
+                    listener.onContactClicked(contact, position, holder.containerView)
                 }
 
                 val resources = context.resources
                 if (homeDataItem.type?.equals(RECENTLY_CONNECTED_CONTACTS) == true) {
                     val layoutParams: ViewGroup.LayoutParams = holder.cvContactImage.layoutParams
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen._60sdp)
-                    layoutParams.width = resources.getDimensionPixelSize(R.dimen._60sdp)
+                    layoutParams.height = resources.getDimensionPixelSize(R.dimen._70sdp)
+                    layoutParams.width = resources.getDimensionPixelSize(R.dimen._70sdp)
                     holder.cvContactImage.requestLayout()
                     holder.tvContactPlaceholder.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimensionPixelSize(R.dimen._30ssp).toFloat())
                 } else {

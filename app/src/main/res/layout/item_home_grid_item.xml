@@ -21,7 +21,7 @@
         android:gravity="center"
         android:singleLine="true"
         android:textColor="@color/swamp"
-        android:textSize="@dimen/_12ssp"
+        android:textSize="@dimen/_10ssp"
         tools:text="Shubham Ratrey" />
 
     <TextView
