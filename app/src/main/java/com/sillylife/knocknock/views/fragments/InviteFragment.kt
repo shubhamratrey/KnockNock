@@ -30,7 +30,7 @@ class InviteFragment : BaseFragment() {
         fun newInstance() = InviteFragment()
     }
 
-    private var dbHelper: DBHelper? = null
+//    private var dbHelper: DBHelper? = null
     private var adapter: InviteAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -39,10 +39,13 @@ class InviteFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dbHelper = ViewModelProvider(activity!!).get(DBHelper::class.java)
-        ContactsHelper.updatePhoneContactsToDB()
+//        dbHelper = ViewModelProvider(activity!!).get(DBHelper::class.java)
+//        ContactsHelper.updatePhoneContactsToDB()
         setAdapter()
         setupSearchView()
+        toolbar?.setNavigationOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 
     private fun setAdapter() {
@@ -109,7 +112,6 @@ class InviteFragment : BaseFragment() {
                     if (adapter?.filter != null) {
                         adapter?.filter?.filter(newText)
                     }
-
                 }
                 return false
             }
@@ -124,7 +126,6 @@ class InviteFragment : BaseFragment() {
             }
         })
 //        searchView.onActionViewExpanded()
-
         val textview: TextView = searchView.findViewById(androidx.appcompat.R.id.search_src_text)
         val typeface = ResourcesCompat.getFont(activity!!, R.font.notosans_regular)
         textview.typeface = typeface

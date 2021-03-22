@@ -15,10 +15,10 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.KnockNock"
+        android:theme="@style/Theme.KnockNock.NoActionBar"
         android:usesCleartextTraffic="true">
 
-        <receiver android:name=".views.fragments.RecentlyKnocked">
+        <receiver android:name=".views.fragments.RecentlyKnockedWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -37,6 +37,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".views.activity.WebViewActivity"
+            android:theme="@style/Theme.KnockNock.NoActionBar" />
 
         <service android:name=".services.FirebaseMessaging">
             <intent-filter>
@@ -47,8 +50,8 @@
         <service
             android:name=".services.ContactWatchService"
             android:enabled="true"
-            android:process=":KnockNockContactWatchService"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":KnockNockContactWatchService" />
     </application>
 
 </manifest>

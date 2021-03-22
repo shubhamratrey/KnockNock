@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flChannel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="?attr/selectableItemBackgroundBorderless"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_contact" />
+
+    <TextView
+        android:id="@+id/tvPrimaryText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/_4sdp"
+        android:ellipsize="marquee"
+        android:fontFamily="@font/notosans_medium"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/swamp"
+        android:textSize="@dimen/_12ssp"
+        tools:text="Shubham Ratrey" />
+
+    <TextView
+        android:id="@+id/tvSecondaryText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="@dimen/_12ssp"
+        android:visibility="gone"
+        tools:text="Just Now" />
+
+
+</LinearLayout>

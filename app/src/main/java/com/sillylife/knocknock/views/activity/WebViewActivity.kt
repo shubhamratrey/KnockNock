@@ -206,7 +206,7 @@ class WebViewActivity : BaseActivity() {
     }
 
     companion object {
-        const val APP_PACKAGENAME = "com.zoopzam.partner"
+        const val APP_PACKAGENAME = "com.sillylife.knocknock"
     }
 
     override fun onDestroy() {

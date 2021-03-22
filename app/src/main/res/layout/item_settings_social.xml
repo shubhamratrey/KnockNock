@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="@dimen/_25sdp"
+    android:layout_marginEnd="16dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="13dp"
+    app:cardElevation="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingStart="16dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="10dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvFollow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/notosans_regular"
+            android:text="Follow us on"
+            android:textColor="@color/swamp"
+            android:textSize="@dimen/_14ssp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivFacebook"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:layout_marginEnd="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/ivTwitter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_facebook" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivTwitter"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:layout_marginEnd="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/ivInstagram"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_twitter" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivInstagram"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_instagram" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>
+
+

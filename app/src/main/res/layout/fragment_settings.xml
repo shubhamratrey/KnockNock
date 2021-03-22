@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/linen"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".views.activity.MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:layout_scrollFlags="snap"
+            app:titleEnabled="false">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:gravity="center"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:navigationIcon="@drawable/ic_left_arrow">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="56dp"
+                    android:fontFamily="@font/notosans_medium"
+                    android:gravity="center"
+                    android:text="Settings"
+                    android:visibility="invisible"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rcvAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/linen"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:paddingTop="10dp"
+        android:paddingBottom="60dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:itemCount="1"
+        tools:listitem="@layout/item_settings_social" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

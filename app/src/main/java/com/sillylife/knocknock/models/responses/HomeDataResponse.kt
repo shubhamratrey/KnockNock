@@ -9,6 +9,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class HomeDataResponse(
         @SerializedName("items") var items: ArrayList<HomeDataItem>? = null,
-        @SerializedName("contacts") var contacts: ArrayList<Contact>? = null,
         @SerializedName("has_more") var hasMore: Boolean? = null
 ) : Parcelable

@@ -9,7 +9,7 @@ import com.sillylife.knocknock.R
 /**
  * Implementation of App Widget functionality.
  */
-class RecentlyKnocked : AppWidgetProvider() {
+class RecentlyKnockedWidget : AppWidgetProvider() {
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         // There may be multiple widgets active, so update all of them

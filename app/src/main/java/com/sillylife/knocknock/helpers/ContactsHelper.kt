@@ -153,7 +153,10 @@ object ContactsHelper {
     fun getDBPhoneContactList(): ArrayList<Contact> {
         val contactList: ArrayList<Contact> = ArrayList()
         val dbContactList = mContactsDao?.getContactsList() as ArrayList<ContactsEntity>?
-        dbContactList?.forEach { item ->
+        if (dbContactList?.size!! < 1) {
+            return contactList
+        }
+        dbContactList.forEach { item ->
             contactList.add(MapDbEntities.contactToEntity(item))
         }
         return contactList
@@ -162,7 +165,10 @@ object ContactsHelper {
     fun getDBRecentlyConnectedContactList(): ArrayList<Contact> {
         val contactList: ArrayList<Contact> = ArrayList()
         val dbContactList = mContactsDao?.getLastConnectedContactsListByLimit(RECENTLY_LOWER_LIMIT) as ArrayList<ContactsEntity>?
-        dbContactList?.forEach { item ->
+        if (dbContactList?.size!! < 1) {
+            return contactList
+        }
+        dbContactList.forEach { item ->
             contactList.add(MapDbEntities.contactToEntity(item))
         }
         return contactList
@@ -171,7 +177,10 @@ object ContactsHelper {
     fun getAvailableContactList(): ArrayList<Contact> {
         val contactList: ArrayList<Contact> = ArrayList()
         val dbContactList = mContactsDao?.getAvailableContactsListByLimit(10000) as ArrayList<ContactsEntity>?
-        dbContactList?.forEach { item ->
+        if (dbContactList?.size!! < 1) {
+            return contactList
+        }
+        dbContactList.forEach { item ->
             contactList.add(MapDbEntities.contactToEntity(item))
         }
         return contactList

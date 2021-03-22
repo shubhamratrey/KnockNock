@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingTop="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvWebTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:alpha="1"
+            android:fontFamily="@font/notosans_regular"
+            android:textColor="@color/swamp"
+            android:textSize="@dimen/_14ssp"
+            tools:text="What's New" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:alpha="0.6"
+            android:tint="@color/swamp"
+            app:srcCompat="@drawable/ic_baseline_north_east_24" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/dividerSettingUrls"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:alpha="0.5"
+        android:background="@color/river_bed_20" />
+
+</LinearLayout>

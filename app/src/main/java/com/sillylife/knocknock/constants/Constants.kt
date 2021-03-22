@@ -56,8 +56,8 @@ object Constants {
 
     interface HomeType {
         companion object {
-            const val RECENTLY_CONNECTED = "recently_connected"
-            const val CONTACT_LIST = "contact_list"
+            const val RECENTLY_CONNECTED_CONTACTS = "recently_connected_contacts"
+            const val AVAILABLE_CONTACTS = "available_contacts"
         }
     }
 
@@ -79,11 +79,11 @@ object Constants {
         }
     }
 
-    interface OrderTypes {
+    interface SocialLinks {
         companion object {
-            const val REQUEST = "request"
-            const val ACTIVE = "active"
-            const val PAST = "past"
+            const val INSTAGRAM = "https://www.instagram.com//"
+            const val FACEBOOK = "https://www.facebook.com/"
+            const val TWITTER = "https://twitter.com/"
         }
     }
 

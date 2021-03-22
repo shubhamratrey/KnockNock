@@ -6,56 +6,41 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sillylife.knocknock.R
-import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.constants.Constants.HOME_PAGINATE
-import com.sillylife.knocknock.constants.Constants.HOME_SCROLL
-import com.sillylife.knocknock.constants.Constants.HomeType
 import com.sillylife.knocknock.constants.Constants.IMPRESSION
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
 import com.sillylife.knocknock.models.responses.HomeDataResponse
-import com.sillylife.knocknock.utils.CommonUtil
-import com.sillylife.knocknock.utils.ImageManager
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_contact_linear.*
-import kotlinx.android.synthetic.main.item_home_recyclerview.*
+import kotlinx.android.synthetic.main.item_home_grid_layout.*
 
 class HomeAdapter(val context: Context, val response: HomeDataResponse, val listener: (Any, Int, String, Any?) -> Unit) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
 
     val commonItemLists = ArrayList<Any>()
     var pageNo = 0
-    var scrollBackPosition: Int = 6
     var TAG = HomeAdapter::class.java.simpleName
 
 
     companion object {
-        const val PROGRESS_VIEW = 0
-        const val RECYCLERVIEW_WITH_HEADER = 1
-        const val HEADER = 2
-        const val CONTACT_ITEM = 3
-        const val SCROLLBACK_SHOW_ID = -111
-        const val SCROLLBACK_HIDE_ID = -222
+        const val RECENTLY_CONNECTED_CONTACTS_VIEW = 0
+        const val AVAILABLE_CONTACTS_VIEW = 1
+        const val FOOTER_VIEW = 3
+        const val PROGRESS_VIEW = 4
 
-        const val UPDATE_RECENTLY_CONNECTED = "update_recently_connected"
-        const val UPDATE_ALL_CONTACT_DATA = "update_all_contact_data"
+        interface HomeType {
+            companion object {
+                const val RECENTLY_CONNECTED_CONTACTS = "recently_connected_contacts"
+                const val AVAILABLE_CONTACTS = "available_contacts"
+            }
+        }
     }
 
     init {
         if (response.items != null && response.items!!.isNotEmpty()) {
-            pageNo++
-            for (item in response.items!!) {
-                if (item.type == HomeType.CONTACT_LIST) {
-                    commonItemLists.add(item.title!!)
-                    commonItemLists.addAll(item.contacts!!)
-                } else {
-                    commonItemLists.add(item)
-                }
-            }
+            commonItemLists.addAll(response.items!!)
             if (response.hasMore != null && response.hasMore!!) {
                 commonItemLists.add(PROGRESS_VIEW)
             }
@@ -63,31 +48,34 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when {
-            commonItemLists[position] is HomeDataItem -> {
-                val homeDataItem = commonItemLists[position] as HomeDataItem
-                when (homeDataItem.type) {
-                    HomeType.RECENTLY_CONNECTED -> RECYCLERVIEW_WITH_HEADER
-                    else -> PROGRESS_VIEW
+        return if (commonItemLists[position] is Int) {
+            when {
+                commonItemLists[position] == PROGRESS_VIEW -> PROGRESS_VIEW
+                else -> FOOTER_VIEW
+            }
+        } else
+            when {
+                commonItemLists[position] is HomeDataItem -> {
+                    val homeDataItem = commonItemLists[position] as HomeDataItem
+                    when {
+                        homeDataItem.type?.equals(HomeType.RECENTLY_CONNECTED_CONTACTS) == true -> {
+                            RECENTLY_CONNECTED_CONTACTS_VIEW
+                        }
+                        homeDataItem.type?.equals(HomeType.AVAILABLE_CONTACTS) == true -> {
+                            AVAILABLE_CONTACTS_VIEW
+                        }
+                        else -> {
+                            FOOTER_VIEW
+                        }
+                    }
                 }
+                else -> PROGRESS_VIEW
             }
-            commonItemLists[position] is Contact -> {
-                CONTACT_ITEM
-            }
-            commonItemLists[position] is String -> {
-                HEADER
-            }
-            else -> {
-                PROGRESS_VIEW
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = when (viewType) {
-            RECYCLERVIEW_WITH_HEADER -> LayoutInflater.from(context).inflate(R.layout.item_home_recyclerview, parent, false)
-            CONTACT_ITEM -> LayoutInflater.from(context).inflate(R.layout.item_contact_linear, parent, false)
-            HEADER -> LayoutInflater.from(context).inflate(R.layout.item_home_recyclerview, parent, false)
+            RECENTLY_CONNECTED_CONTACTS_VIEW, AVAILABLE_CONTACTS_VIEW -> LayoutInflater.from(context).inflate(R.layout.item_home_grid_layout, parent, false)
             else -> LayoutInflater.from(context).inflate(R.layout.item_progress, parent, false)
         }
         return ViewHolder(view)
@@ -97,125 +85,87 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
         return commonItemLists.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (!payloads.isNullOrEmpty()) {
-            for (any in payloads) {
-                if (any is String) {
-                    when (any) {
-//                        UPDATE_ALL_CONTACT_DATA -> { // to enable infinite scrolling for CUs
-//                            val adapter = holder.rcvAll.adapter as ContactsAdapter
-//                            val homeDataItem = commonItemLists[holder.adapterPosition]
-//                            if (homeDataItem is HomeDataItem) {
-//                                adapter.addMoreContactsData(homeDataItem.contacts!!, homeDataItem.hasNext!!)
-//                            }
+//    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+//        if (!payloads.isNullOrEmpty()) {
+//            for (any in payloads) {
+//                if (any is String) {
+//                    when (any) {
+////                        UPDATE_ALL_CONTACT_DATA -> { // to enable infinite scrolling for CUs
+////                            val adapter = holder.rcvAll.adapter as ContactsAdapter
+////                            val homeDataItem = commonItemLists[holder.adapterPosition]
+////                            if (homeDataItem is HomeDataItem) {
+////                                adapter.addMoreContactsData(homeDataItem.contacts!!, homeDataItem.hasNext!!)
+////                            }
+////                        }
+//                    }
+//                } else if (any is Contact) {
+//                    if (holder.rcvAll.adapter is HomeContactsAdapter) {
+//                        val adapter = holder.rcvAll.adapter as HomeContactsAdapter
+//                        if (adapter.layoutManager == Constants.ContactLayoutType.HORIZONTAL_LAYOUT) {
+//                            adapter.updateRecentlyConnected(any)
 //                        }
-                    }
-                } else if (any is Contact) {
-                    if (holder.rcvAll.adapter is ContactsAdapter) {
-                        val adapter = holder.rcvAll.adapter as ContactsAdapter
-                        if (adapter.layoutManager == Constants.ContactLayoutType.HORIZONTAL_LAYOUT) {
-                            adapter.updateRecentlyConnected(any)
-                        }
-                    }
-                }
-            }
-        } else {
-            super.onBindViewHolder(holder, position, payloads)
-        }
-    }
+//                    }
+//                }
+//            }
+//        } else {
+//            super.onBindViewHolder(holder, position, payloads)
+//        }
+//    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            RECYCLERVIEW_WITH_HEADER -> {
-                val homeDataItem = commonItemLists[holder.adapterPosition] as HomeDataItem
-                when (homeDataItem.type) {
-                    HomeType.RECENTLY_CONNECTED -> setRecentlyConnectedData(holder, holder.adapterPosition, homeDataItem)
-                }
+            RECENTLY_CONNECTED_CONTACTS_VIEW, AVAILABLE_CONTACTS_VIEW -> {
+                setGridLayoutView(holder)
             }
-            CONTACT_ITEM -> {
-                setContactItemData(holder, holder.adapterPosition)
-            }
-            HEADER -> {
-                if (commonItemLists[holder.adapterPosition] is String && commonItemLists[holder.adapterPosition] != null) {
-                    holder.titleTv.text = commonItemLists[holder.adapterPosition] as String
-                    holder.rcvAll?.visibility = View.GONE
-                }
-            }
-
         }
 
         if (holder.adapterPosition == itemCount - 1) {
             if (response.hasMore != null && response.hasMore!!) {
                 listener(pageNo, -1, HOME_PAGINATE, null)
             }
-
-            if (position > scrollBackPosition) {
-                // show scroll back visible
-                listener(SCROLLBACK_SHOW_ID, -1, HOME_SCROLL, null)
-            } else {
-                // hide scroll back visible
-                listener(SCROLLBACK_HIDE_ID, -1, HOME_SCROLL, null)
-            }
         }
     }
 
-    private fun setRecentlyConnectedData(holder: ViewHolder, position: Int, homeDataItem: HomeDataItem) {
+    private fun setGridLayoutView(holder: ViewHolder) {
+        val homeDataItem = commonItemLists[holder.adapterPosition] as HomeDataItem
         holder.titleTv.text = homeDataItem.title
         if (homeDataItem.contacts != null) {
-            val adapter = ContactsAdapter(context = context, items = homeDataItem.contacts, hasNext = false,
-                    layoutManager = Constants.ContactLayoutType.HORIZONTAL_LAYOUT,
-                    object : ContactsAdapter.ContactsAdapterListener {
-                        override fun onContactClicked(contact: Contact, position: Int, view: View?) {
+            val adapter = HomeContactsAdapter(context = context, homeDataItem, object : HomeContactsAdapter.ContactsAdapterListener {
+                override fun onContactClicked(contact: Contact, position: Int, view: View?) {
+                    listener(contact, holder.adapterPosition, homeDataItem.type!!, homeDataItem.type)
+                }
 
-                        }
+                override fun onImpression(contact: Contact, itemRank: Int) {
+                    listener(contact, itemRank, IMPRESSION, homeDataItem.type)
+                }
 
-                        override fun onInviteClicked(contact: Contact, position: Int, view: View?) {
-                            listener(contact, holder.adapterPosition, "INVITE", null)
-                        }
+                override fun onLoadMoreData(pageNo: Int) {
 
-                        override fun onImpression(contact: Contact, itemRank: Int) {
-                            listener(contact, itemRank, IMPRESSION, "RECENTLY")
-                        }
+                }
+            })
 
-                        override fun onLoadMoreData(pageNo: Int) {
-
-                        }
-                    })
-
-            if (holder.rcvAll.adapter == null) {
-                holder.rcvAll?.addItemDecoration(GridItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20)))
-            }
             adapter.setHasStableIds(true)
-//            holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 4)
-            holder.rcvAll?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            if (homeDataItem.type == HomeType.AVAILABLE_CONTACTS) {
+                if (holder.rcvAll.adapter == null) {
+//                holder.rcvAll?.addItemDecoration(GridItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20)))
+                    holder.rcvAll?.addItemDecoration(GridSpacingItemDecoration(4, context.resources.getDimensionPixelSize(R.dimen.dp_20), false))
+                }
+                holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 4)
+            } else {
+                if (holder.rcvAll.adapter == null) {
+//                holder.rcvAll?.addItemDecoration(GridItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20)))
+                    holder.rcvAll?.addItemDecoration(GridSpacingItemDecoration(3, context.resources.getDimensionPixelSize(R.dimen.dp_20), false))
+                }
+                holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 3)
+            }
             holder.rcvAll?.adapter = adapter
             holder.rcvAll?.setHasFixedSize(true)
         }
     }
 
-    private fun setContactItemData(holder: ViewHolder, position: Int) {
-        val contact = commonItemLists[holder.adapterPosition] as Contact
-        holder.contactVerticalImageIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
-                ?: throw IllegalArgumentException("Cannot load drawable"))
-        if (CommonUtil.textIsNotEmpty(contact.image))
-            ImageManager.loadImageCircular(holder.contactVerticalImageIv, contact.image)
-        holder.contactVerticalName?.text = contact.name
-        holder.contactVerticalPhoneNumber?.text = contact.phone
-
-        holder.containerView.setOnClickListener {
-            listener(contact, holder.adapterPosition, HomeType.CONTACT_LIST, null)
-        }
-
-        holder.contactVerticalInvite.setOnClickListener {
-            listener(contact, holder.adapterPosition, "INVITE", null)
-        }
-
-        listener(contact, holder.adapterPosition, IMPRESSION, "PHONE_CONTACTS")
-    }
-
     fun updateRecentlyConnected(contact: Contact) {
         for (i in commonItemLists.indices) {
-            if (commonItemLists[i] is HomeDataItem && (commonItemLists[i] as HomeDataItem).type?.equals(HomeType.RECENTLY_CONNECTED) == true) {
+            if (commonItemLists[i] is HomeDataItem && (commonItemLists[i] as HomeDataItem).type?.equals(HomeType.RECENTLY_CONNECTED_CONTACTS) == true) {
                 notifyItemChanged(i, contact)
                 break
             }
@@ -243,7 +193,7 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
         if (commonItemLists != null && commonItemLists.size > 0) {
             for (i in commonItemLists.indices) {
                 val a = commonItemLists[i]
-                if (a is HomeDataItem && a.type.equals(HomeType.RECENTLY_CONNECTED)) {
+                if (a is HomeDataItem && a.type.equals(HomeType.RECENTLY_CONNECTED_CONTACTS)) {
                     homeDataItem = a
                     itemIndex = i
                     break
@@ -259,32 +209,32 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
             notifyItemChanged(itemIndex)
         }
     }
-
-    fun addMoreCUData(response: HomeDataResponse) {
-        var homeDataItem: HomeDataItem? = null
-        var itemIndex = 0
-        if (response.contacts != null && response.contacts!!.isNotEmpty()) {
-            if (commonItemLists.size > 0) {
-                for (i in commonItemLists.indices) {
-                    val a = commonItemLists[i]
-                    if (a is HomeDataItem && a.contacts != null) {
-                        homeDataItem = a
-                        itemIndex = i
-                        break
-                    }
-                }
-            }
-            homeDataItem?.contacts?.addAll(response.contacts!!)
-            homeDataItem?.hasNext = response.hasMore ?: false
-            if (homeDataItem != null) {
-                when {
-                    homeDataItem.type.equals(HomeType.CONTACT_LIST) -> {
-                        notifyItemChanged(itemIndex, UPDATE_ALL_CONTACT_DATA)
-                    }
-                }
-            }
-        }
-    }
+//
+//    fun addMoreCUData(response: HomeDataResponse) {
+//        var homeDataItem: HomeDataItem? = null
+//        var itemIndex = 0
+//        if (response.contacts != null && response.contacts!!.isNotEmpty()) {
+//            if (commonItemLists.size > 0) {
+//                for (i in commonItemLists.indices) {
+//                    val a = commonItemLists[i]
+//                    if (a is HomeDataItem && a.contacts != null) {
+//                        homeDataItem = a
+//                        itemIndex = i
+//                        break
+//                    }
+//                }
+//            }
+//            homeDataItem?.contacts?.addAll(response.contacts!!)
+//            homeDataItem?.hasNext = response.hasMore ?: false
+//            if (homeDataItem != null) {
+//                when {
+//                    homeDataItem.type.equals(HomeType.CONTACT_LIST) -> {
+//                        notifyItemChanged(itemIndex, UPDATE_ALL_CONTACT_DATA)
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
@@ -301,6 +251,27 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
                 outRect.right = rightMargin
             } else {
                 outRect.left = leftMargin
+            }
+        }
+    }
+
+    class GridSpacingItemDecoration(private val spanCount: Int, private val spacing: Int, private val includeEdge: Boolean) : RecyclerView.ItemDecoration() {
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            val position = parent.getChildAdapterPosition(view) // item position
+            val column = position % spanCount // item column
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * spacing / spanCount // (column + 1) * ((1f / spanCount) * spacing)
+                if (position < spanCount) { // top edge
+                    outRect.top = spacing
+                }
+                outRect.bottom = spacing // item bottom
+            } else {
+                outRect.left = column * spacing / spanCount // column * ((1f / spanCount) * spacing)
+                outRect.right = spacing - (column + 1) * spacing / spanCount // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = spacing // item top
+                }
             }
         }
     }

@@ -16,6 +16,8 @@ import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
 import com.sillylife.knocknock.models.responses.HomeDataResponse
 import com.sillylife.knocknock.views.adapter.HomeAdapter
+import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.AVAILABLE_CONTACTS
+import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.RECENTLY_CONNECTED_CONTACTS
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : BaseFragment() {
@@ -54,29 +56,34 @@ class HomeFragment : BaseFragment() {
         val recentlyConnectedContactList = ContactsHelper.getDBRecentlyConnectedContactList()
         if (recentlyConnectedContactList.isNotEmpty() && recentlyConnectedContactList.size >= 1) {
             recentlyListenedRowExists = true
-            items.add(HomeDataItem(type = Constants.HomeType.RECENTLY_CONNECTED, title = "Recently Connected", contacts = recentlyConnectedContactList, false))
+            items.add(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = recentlyConnectedContactList, false))
         }
         val contact = ContactsHelper.getDBPhoneContactList()
-        items.add(HomeDataItem(type = Constants.HomeType.CONTACT_LIST, title = "Phone Contacts", contacts = contact, false))
+//        val contact = ContactsHelper.getAvailableContactList()
+        items.add(HomeDataItem(type = AVAILABLE_CONTACTS, title = "Phone Contacts", contacts = contact, false))
         setHomeAdapter(HomeDataResponse(items = items, hasMore = false))
 
+        cvContactImage?.setOnClickListener {
+            addFragment(SettingsFragment.newInstance(), SettingsFragment.TAG)
+        }
+        fabButton?.setOnClickListener {
+            addFragment(InviteFragment.newInstance(), InviteFragment.TAG)
+        }
     }
 
     private fun setHomeAdapter(homeDataResponse: HomeDataResponse) {
         adapter = HomeAdapter(requireContext(), homeDataResponse) { it: Any, pos: Int, type: String, it2: Any? ->
             if (it is Contact) {
-                if (type == Constants.HomeType.CONTACT_LIST) {
+                if (type == AVAILABLE_CONTACTS || type == RECENTLY_CONNECTED_CONTACTS) {
                     ContactsHelper.updateLastConnected(it.phone!!)
                     if (!recentlyListenedRowExists) {
                         val contactList: ArrayList<Contact> = ArrayList()
                         contactList.add(it)
                         recentlyListenedRowExists = true
-                        adapter?.addRecentlyListenedRow(HomeDataItem(type = Constants.HomeType.RECENTLY_CONNECTED, title = "Recently Connected", contacts = contactList, false))
+                        adapter?.addRecentlyListenedRow(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = contactList, false))
                     } else {
                         adapter?.updateRecentlyConnected(it)
                     }
-                } else if (type == "INVITE") {
-                    ContactsHelper.updateContactInvited(it.phone!!)
                 }
             }
             if (type == Constants.IMPRESSION) {

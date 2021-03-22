@@ -26,7 +26,7 @@ interface ContactsDao : BaseDao<ContactsEntity> {
     @Query("UPDATE contacts SET has_invited = :invited where phone = :phone")
     fun updateContactInvited(invited: Boolean, phone: String)
 
-    @Query("SELECT * from contacts WHERE available_on_platform IS NOT NULL ORDER BY name DESC LIMIT :limit")
+    @Query("SELECT * from contacts WHERE available_on_platform IS NOT NULL AND available_on_platform == 1 ORDER BY name DESC LIMIT :limit")
     fun getAvailableContactsListByLimit(limit: Int): List<ContactsEntity>
 }
 
