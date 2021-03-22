@@ -11,17 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.database.DBHelper
-import com.sillylife.knocknock.database.MapDbEntities
 import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
 import com.sillylife.knocknock.models.responses.HomeDataResponse
-import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.views.adapter.HomeAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlin.collections.ArrayList
 
-class HomeFragment : BaseFragment(){
+class HomeFragment : BaseFragment() {
 
     companion object {
         val TAG = HomeFragment::class.java.simpleName
@@ -38,8 +35,8 @@ class HomeFragment : BaseFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         dbHelper = ViewModelProvider(activity!!).get(DBHelper::class.java)
+        ContactsHelper.updatePhoneContactsToDB()
 
         val items: ArrayList<HomeDataItem> = arrayListOf()
 //
@@ -63,18 +60,14 @@ class HomeFragment : BaseFragment(){
         items.add(HomeDataItem(type = Constants.HomeType.CONTACT_LIST, title = "Phone Contacts", contacts = contact, false))
         setHomeAdapter(HomeDataResponse(items = items, hasMore = false))
 
-        fab.setOnClickListener {
-            SharedPreferenceManager.storeRecentlyConnectedContacts(ArrayList<Contact>())
-            ContactsHelper.updatePhoneContactsToDB()
-        }
     }
 
     private fun setHomeAdapter(homeDataResponse: HomeDataResponse) {
-        adapter = HomeAdapter(requireContext(), homeDataResponse) { it: Any, pos: Int, type: String, it2:Any?->
+        adapter = HomeAdapter(requireContext(), homeDataResponse) { it: Any, pos: Int, type: String, it2: Any? ->
             if (it is Contact) {
                 if (type == Constants.HomeType.CONTACT_LIST) {
                     ContactsHelper.updateLastConnected(it.phone!!)
-                    if (!recentlyListenedRowExists){
+                    if (!recentlyListenedRowExists) {
                         val contactList: ArrayList<Contact> = ArrayList()
                         contactList.add(it)
                         recentlyListenedRowExists = true
@@ -82,9 +75,11 @@ class HomeFragment : BaseFragment(){
                     } else {
                         adapter?.updateRecentlyConnected(it)
                     }
+                } else if (type == "INVITE") {
+                    ContactsHelper.updateContactInvited(it.phone!!)
                 }
             }
-            if (type == Constants.IMPRESSION){
+            if (type == Constants.IMPRESSION) {
                 Log.d("IMPRESSION", "Contact - $it | Source - $it2")
             }
         }

@@ -4,15 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sillylife.knocknock.R
-import com.sillylife.knocknock.constants.Constants
+import com.sillylife.knocknock.constants.Constants.ContactLayoutType
 import com.sillylife.knocknock.constants.Constants.RECENTLY_LOWER_LIMIT
 import com.sillylife.knocknock.models.Contact
+import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.ImageManager
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_contact_grid.*
-import kotlinx.android.synthetic.main.item_contact_grid.contactName
 import kotlinx.android.synthetic.main.item_contact_linear.*
 
 class ContactsAdapter(val context: Context,
@@ -29,32 +30,51 @@ class ContactsAdapter(val context: Context,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return if (layoutManager == Constants.LayoutManager.GRID_LAYOUT_MANAGER) {
-            ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_contact_grid, parent, false))
-        } else {
-            ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_contact_linear, parent, false))
+        val resId: Int = when (layoutManager) {
+            ContactLayoutType.HORIZONTAL_LAYOUT -> {
+                R.layout.item_contact_grid
+            }
+            ContactLayoutType.VERTICAL_LAYOUT -> {
+                R.layout.item_contact_linear
+            }
+            else -> {
+                R.layout.item_contact_linear
+            }
         }
+        return ViewHolder(LayoutInflater.from(context).inflate(resId, parent, false))
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val contact = commonItemList[holder.adapterPosition] as Contact
         when (layoutManager) {
-            Constants.LayoutManager.GRID_LAYOUT_MANAGER -> {
-                holder.contactImageIv?.setImageResource(R.drawable.alpha_white_solid_circle)
-                ImageManager.loadImageCircular(holder.contactImageIv, contact.image)
-                holder.contactLastConnected?.text = contact.lastConnectedDateString()
+            ContactLayoutType.HORIZONTAL_LAYOUT -> {
+                holder.contactHorizontalImageIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
+                        ?: throw IllegalArgumentException("Cannot load drawable"))
+                if (CommonUtil.textIsNotEmpty(contact.image))
+                    ImageManager.loadImageCircular(holder.contactHorizontalImageIv, contact.image)
+                holder.contactHorizontalLastConnected?.text = contact.lastConnectedDateString()
+                holder.contactHorizontalName?.text = contact.name
             }
-            Constants.LayoutManager.LINEAR_LAYOUT_MANAGER -> {
+            ContactLayoutType.VERTICAL_LAYOUT -> {
+                holder.contactVerticalImageIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
+                        ?: throw IllegalArgumentException("Cannot load drawable"))
+                if (CommonUtil.textIsNotEmpty(contact.image))
+                    ImageManager.loadImageCircular(holder.contactVerticalImageIv, contact.image)
                 //  to enable infinite scrolling
 //                val pos = if (itemCount - 10 < 0) itemCount - 1 else itemCount - 10
 //                if (holder.adapterPosition == pos && hasNext) {
 //                    oldCount = itemCount
 //                    listener.onLoadMoreData(page_no)
 //                }
-                holder.contactPhoneNumber?.text = contact.phone
+                holder.contactVerticalPhoneNumber?.text = contact.phone
+                holder.contactVerticalName?.text = contact.name
+
+                holder.contactVerticalInvite?.setOnClickListener {
+                    listener.onInviteClicked(contact, position, holder.containerView)
+                }
             }
         }
-        holder.contactName?.text = contact.name
 
         holder.containerView.setOnClickListener {
             listener.onContactClicked(contact, position, holder.containerView)
@@ -74,7 +94,7 @@ class ContactsAdapter(val context: Context,
     }
 
     override fun getItemCount(): Int {
-        return if (layoutManager == Constants.LayoutManager.GRID_LAYOUT_MANAGER && commonItemList.size > RECENTLY_LOWER_LIMIT) {
+        return if (layoutManager == ContactLayoutType.HORIZONTAL_LAYOUT && commonItemList.size > RECENTLY_LOWER_LIMIT) {
             RECENTLY_LOWER_LIMIT
         } else {
             commonItemList.size
@@ -83,7 +103,16 @@ class ContactsAdapter(val context: Context,
 
     override fun onViewRecycled(holder: ViewHolder) {
         super.onViewRecycled(holder)
-        holder.contactImageIv.setImageResource(R.drawable.ic_place_holder_colors)
+        when (layoutManager) {
+            ContactLayoutType.HORIZONTAL_LAYOUT -> {
+                holder.contactHorizontalImageIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
+                        ?: throw IllegalArgumentException("Cannot load drawable"))
+            }
+            ContactLayoutType.VERTICAL_LAYOUT -> {
+                holder.contactVerticalImageIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
+                        ?: throw IllegalArgumentException("Cannot load drawable"))
+            }
+        }
     }
 
     fun updateRecentlyConnected(contact: Contact) {
@@ -117,6 +146,7 @@ class ContactsAdapter(val context: Context,
 
     interface ContactsAdapterListener {
         fun onContactClicked(contact: Contact, position: Int, view: View?)
+        fun onInviteClicked(contact: Contact, position: Int, view: View?)
         fun onImpression(contact: Contact, itemRank: Int)
         fun onLoadMoreData(pageNo: Int)
     }

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp">
+
+    <include
+        android:id="@+id/cvContactImage"
+        layout="@layout/layout_contact"
+        android:layout_width="@dimen/_37sdp"
+        android:layout_height="@dimen/_37sdp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPrimary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:alpha="1"
+        android:fontFamily="@font/notosans_medium"
+        android:textColor="@color/swamp"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintEnd_toStartOf="@id/buttonLayout"
+        app:layout_constraintStart_toEndOf="@id/cvContactImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Shubham Ratrey" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_4sdp"
+        android:alpha="0.7"
+        android:fontFamily="@font/notosans_regular"
+        android:gravity="top"
+        android:textColor="@color/swamp"
+        android:textSize="@dimen/_10ssp"
+        app:layout_constraintEnd_toStartOf="@id/buttonLayout"
+        app:layout_constraintStart_toEndOf="@id/cvContactImage"
+        app:layout_constraintTop_toBottomOf="@+id/tvPrimary"
+        tools:text="+918109212607" />
+
+    <FrameLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvPrimary"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_capsule_r30"
+            android:fontFamily="@font/notosans_medium"
+            android:gravity="center"
+            android:paddingStart="@dimen/_14sdp"
+            android:paddingTop="@dimen/_4sdp"
+            android:paddingEnd="@dimen/_14sdp"
+            android:paddingBottom="@dimen/_4sdp"
+            android:text="@string/invite"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10ssp"
+            android:visibility="invisible" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvJoined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="@dimen/_3sdp"
+            android:fontFamily="@font/notosans_medium"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/_2sdp"
+            android:text="@string/joined"
+            android:textColor="@color/river_bed"
+            android:textSize="@dimen/_10ssp"
+            app:drawableStartCompat="@drawable/ic_tick" />
+
+    </FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

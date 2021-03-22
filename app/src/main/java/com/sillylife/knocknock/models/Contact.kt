@@ -29,4 +29,16 @@ data class Contact(
             return "None"
         return TimeUtils.getTimeAgo(lastConnected?.time?.toString()!!)!!
     }
+
+    fun getInitialsName(): String {
+        if (name?.isEmpty() == true)
+            return ""
+        return name?.split(' ')!!
+                .mapNotNull {
+                    it.firstOrNull()?.toUpperCase().toString()
+                }.take(2)
+                .reduce {
+                    acc, s -> acc + s
+                }
+    }
 }

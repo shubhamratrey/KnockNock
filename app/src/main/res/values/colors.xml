@@ -6,10 +6,73 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="background">#FFFFFFFF</color>
     <color name="light_blue_50">#FFE1F5FE</color>
     <color name="light_blue_200">#FF81D4FA</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
+
+    <!--  ClubHouse Primary  -->
+    <color name="swamp">#001A28</color>
+    <color name="coral">#FD8956</color>
+    <color name="linen">#FCF8ED</color>
+    <color name="apple_green">#41A545</color>
+    <color name="silver_sand">#B5BDC0</color>
+    <color name="silver_sand_50">#80B5BDC0</color>
+    <color name="chambray">#3b5998</color>
+    <color name="river_bed">#45525A</color>
+    <color name="river_bed_20">#3345525A</color>
+    <color name="river_bed_40">#6645525A</color>
+
+
+    <!--  Primary Palette  -->
+    <color name="blurple">#6515DD</color>
+    <color name="white">#FFFFFF</color>
+    <color name="graphite">#414042</color>
+    <color name="graphite_60">#99414042</color>
+    <color name="graphite_80">#CC414042</color>
+    <color name="grey">#BBBDBF</color>
+    <color name="grey_20">#33BBBDBF</color>
+    <color name="grey_40">#66BBBDBF</color>
+    <color name="grey_60">#99BBBDBF</color>
+    <color name="grey_80">#CCBBBDBF</color>
+
+    <!--  Secondary Palette  -->
+    <color name="sunset">#ff5555</color>
+    <color name="sunset_20">#33FF5555</color>
+    <color name="sunset_40">#66FF5555</color>
+    <color name="sunset_60">#99FF5555</color>
+    <color name="sunset_80">#CCFF5555</color>
+    <color name="deep_purple">#3e1191</color>
+    <color name="deep_purple_20">#333E1191</color>
+    <color name="deep_purple_40">#663E1191</color>
+    <color name="deep_purple_60">#993E1191</color>
+    <color name="deep_purple_80">#CC3E1191</color>
+    <color name="sunrise">#fbb81b</color>
+    <color name="sunrise_20">#33FBB81B</color>
+    <color name="sunrise_40">#66FBB81B</color>
+    <color name="sunrise_60">#99FBB81B</color>
+    <color name="sunrise_80">#CCFBB81B</color>
+    <color name="green">#00d38c</color>
+    <color name="green_20">#3300D38C</color>
+    <color name="green_40">#6600D38C</color>
+    <color name="green_60">#9900D38C</color>
+    <color name="green_80">#CC00D38C</color>
+
+    <!--  Tertiary Palette  -->
+    <color name="midnight">#282447</color>
+    <color name="midnight_20">#33282447</color>
+    <color name="midnight_40">#66282447</color>
+    <color name="midnight_60">#99282447</color>
+    <color name="midnight_80">#CC282447</color>
+    <color name="soft_purple">#8b78fa</color>
+    <color name="soft_purple_20">#338B78FA</color>
+    <color name="soft_purple_40">#668B78FA</color>
+    <color name="soft_purple_60">#998B78FA</color>
+    <color name="soft_purple_80">#CC8B78FA</color>
+    <color name="dusty_blue">#a3c5eb</color>
+    <color name="dusty_blue_20">#33A3C5EB</color>
+    <color name="dusty_blue_40">#66A3C5EB</color>
+    <color name="dusty_blue_60">#99A3C5EB</color>
+    <color name="dusty_blue_80">#CCA3C5EB</color>
+
 </resources>

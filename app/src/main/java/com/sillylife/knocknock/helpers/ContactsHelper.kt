@@ -124,6 +124,10 @@ object ContactsHelper {
         mContactsDao?.updateLastConnected(TimeUtils.nowDate.time, phone)
     }
 
+    fun updateContactInvited(phone: String) {
+        mContactsDao?.updateContactInvited(true, phone)
+    }
+
     fun updatePhoneContactsToDB() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             return
@@ -158,6 +162,15 @@ object ContactsHelper {
     fun getDBRecentlyConnectedContactList(): ArrayList<Contact> {
         val contactList: ArrayList<Contact> = ArrayList()
         val dbContactList = mContactsDao?.getLastConnectedContactsListByLimit(RECENTLY_LOWER_LIMIT) as ArrayList<ContactsEntity>?
+        dbContactList?.forEach { item ->
+            contactList.add(MapDbEntities.contactToEntity(item))
+        }
+        return contactList
+    }
+
+    fun getAvailableContactList(): ArrayList<Contact> {
+        val contactList: ArrayList<Contact> = ArrayList()
+        val dbContactList = mContactsDao?.getAvailableContactsListByLimit(10000) as ArrayList<ContactsEntity>?
         dbContactList?.forEach { item ->
             contactList.add(MapDbEntities.contactToEntity(item))
         }

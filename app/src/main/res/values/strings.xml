@@ -25,4 +25,8 @@
     <string name="min">min</string>
     <string name="hour">hr</string>
 
+    <string name="invite">Invite</string>
+    <string name="send_reminder">Send Reminder</string>
+    <string name="joined">Joined</string>
+
 </resources>

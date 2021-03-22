@@ -6,7 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
@@ -17,8 +19,9 @@ import com.sillylife.knocknock.constants.Constants.IMPRESSION
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
 import com.sillylife.knocknock.models.responses.HomeDataResponse
+import com.sillylife.knocknock.utils.CommonUtil
+import com.sillylife.knocknock.utils.ImageManager
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.item_contact_grid.contactName
 import kotlinx.android.synthetic.main.item_contact_linear.*
 import kotlinx.android.synthetic.main.item_home_recyclerview.*
 
@@ -110,7 +113,7 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
                 } else if (any is Contact) {
                     if (holder.rcvAll.adapter is ContactsAdapter) {
                         val adapter = holder.rcvAll.adapter as ContactsAdapter
-                        if (adapter.layoutManager == Constants.LayoutManager.GRID_LAYOUT_MANAGER) {
+                        if (adapter.layoutManager == Constants.ContactLayoutType.HORIZONTAL_LAYOUT) {
                             adapter.updateRecentlyConnected(any)
                         }
                     }
@@ -160,10 +163,14 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
         holder.titleTv.text = homeDataItem.title
         if (homeDataItem.contacts != null) {
             val adapter = ContactsAdapter(context = context, items = homeDataItem.contacts, hasNext = false,
-                    layoutManager = Constants.LayoutManager.GRID_LAYOUT_MANAGER,
+                    layoutManager = Constants.ContactLayoutType.HORIZONTAL_LAYOUT,
                     object : ContactsAdapter.ContactsAdapterListener {
                         override fun onContactClicked(contact: Contact, position: Int, view: View?) {
 
+                        }
+
+                        override fun onInviteClicked(contact: Contact, position: Int, view: View?) {
+                            listener(contact, holder.adapterPosition, "INVITE", null)
                         }
 
                         override fun onImpression(contact: Contact, itemRank: Int) {
@@ -179,8 +186,8 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
                 holder.rcvAll?.addItemDecoration(GridItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20)))
             }
             adapter.setHasStableIds(true)
-//            holder.rcvAll.layoutManager = GridLayoutManager(context, 4, RecyclerView.VERTICAL, false)
-            holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 4)
+//            holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 4)
+            holder.rcvAll?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             holder.rcvAll?.adapter = adapter
             holder.rcvAll?.setHasFixedSize(true)
         }
@@ -188,11 +195,19 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
 
     private fun setContactItemData(holder: ViewHolder, position: Int) {
         val contact = commonItemLists[holder.adapterPosition] as Contact
-        holder.contactName?.text = contact.name
-        holder.contactPhoneNumber?.text = contact.phone
+        holder.contactVerticalImageIv.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
+                ?: throw IllegalArgumentException("Cannot load drawable"))
+        if (CommonUtil.textIsNotEmpty(contact.image))
+            ImageManager.loadImageCircular(holder.contactVerticalImageIv, contact.image)
+        holder.contactVerticalName?.text = contact.name
+        holder.contactVerticalPhoneNumber?.text = contact.phone
 
         holder.containerView.setOnClickListener {
             listener(contact, holder.adapterPosition, HomeType.CONTACT_LIST, null)
+        }
+
+        holder.contactVerticalInvite.setOnClickListener {
+            listener(contact, holder.adapterPosition, "INVITE", null)
         }
 
         listener(contact, holder.adapterPosition, IMPRESSION, "PHONE_CONTACTS")

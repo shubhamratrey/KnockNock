@@ -21,6 +21,7 @@ import com.sillylife.knocknock.services.FirebaseAuthUserManager
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.DexterUtil
 import com.sillylife.knocknock.views.fragments.HomeFragment
+import com.sillylife.knocknock.views.fragments.InviteFragment
 import com.sillylife.knocknock.views.module.MainActivityModule
 import com.sillylife.knocknock.views.viewmodal.MainActivityViewModel
 import com.sillylife.knocknock.views.viewmodelfactory.ActivityViewModelFactory
@@ -90,7 +91,8 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         DexterUtil.with(this, Manifest.permission.READ_CONTACTS).setListener(object :
                 DexterUtil.DexterUtilListener {
             override fun permissionGranted() {
-                replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+//                replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+                replaceFragment(InviteFragment.newInstance(), InviteFragment.TAG)
             }
 
             override fun permissionDenied(token: PermissionToken?) {

@@ -22,5 +22,11 @@ interface ContactsDao : BaseDao<ContactsEntity> {
 
     @Query("UPDATE contacts SET last_connected = :timeStamp where phone = :phone")
     fun updateLastConnected(timeStamp: Long, phone: String)
+
+    @Query("UPDATE contacts SET has_invited = :invited where phone = :phone")
+    fun updateContactInvited(invited: Boolean, phone: String)
+
+    @Query("SELECT * from contacts WHERE available_on_platform IS NOT NULL ORDER BY name DESC LIMIT :limit")
+    fun getAvailableContactsListByLimit(limit: Int): List<ContactsEntity>
 }
 

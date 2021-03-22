@@ -60,10 +60,10 @@ object Constants {
         }
     }
 
-    interface LayoutManager {
+    interface ContactLayoutType {
         companion object {
-            const val GRID_LAYOUT_MANAGER = "GridLayoutManager"
-            const val LINEAR_LAYOUT_MANAGER = "LinearLayoutManager"
+            const val VERTICAL_LAYOUT = "vertical_layout"
+            const val HORIZONTAL_LAYOUT = "horizontal_layout"
         }
     }
 
