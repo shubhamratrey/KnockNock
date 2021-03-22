@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import com.sillylife.knocknock.database.KnockNockDatabase
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
+import com.sillylife.knocknock.managers.FirebaseRemoteConfigManager
 import com.sillylife.knocknock.services.APIService
 import com.sillylife.knocknock.services.AppDisposable
 import com.sillylife.knocknock.services.ConnectivityReceiver
@@ -55,7 +56,7 @@ class MainApplication : Application(), ConnectivityReceiver.ConnectivityReceiver
     override fun onCreate() {
         super.onCreate()
         application = this@MainApplication
-
+        FirebaseRemoteConfigManager.fetchRemoteConfig()
         val intentFilter = IntentFilter()
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         connectivityReceiver = ConnectivityReceiver(this)

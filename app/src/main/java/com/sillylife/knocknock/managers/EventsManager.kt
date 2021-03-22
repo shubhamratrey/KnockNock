@@ -1,4 +1,4 @@
-package com.sillylife.knocknock.services
+package com.sillylife.knocknock.managers
 
 import android.os.Bundle
 import android.util.Log

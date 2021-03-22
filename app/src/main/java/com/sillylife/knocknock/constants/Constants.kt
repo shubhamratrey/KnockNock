@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 object Constants {
 
     const val GALLERY: Int = 1000
+    const val FIREBASE_REMOTE_CONFIG_CACHE_EXPIRATION: Long = 3600
 
     const val AWS_BUCKET_NAME = "zoopzam"
     const val S3_BASE_URL = "https://zoopzam.s3.ap-south-1.amazonaws.com"

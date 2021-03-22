@@ -22,6 +22,7 @@ import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.BundleConstants
 import com.sillylife.knocknock.constants.IntentConstants
 import com.sillylife.knocknock.constants.NotificationKeys
+import com.sillylife.knocknock.managers.FirebaseAuthUserManager
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.ImageManager
 import com.sillylife.knocknock.views.activity.MainActivity

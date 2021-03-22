@@ -2,6 +2,7 @@ package com.sillylife.knocknock.services
 
 import android.content.Context
 import com.sillylife.knocknock.BuildConfig
+import com.sillylife.knocknock.managers.FirebaseAuthUserManager
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

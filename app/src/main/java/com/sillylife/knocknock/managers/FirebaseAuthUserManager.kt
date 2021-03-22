@@ -1,4 +1,4 @@
-package com.sillylife.knocknock.services
+package com.sillylife.knocknock.managers
 
 
 import android.annotation.SuppressLint
@@ -10,10 +10,11 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.installations.FirebaseInstallations
 import com.sillylife.knocknock.BuildConfig
 import com.sillylife.knocknock.MainApplication
 import com.sillylife.knocknock.models.responses.GenericResponse
+import com.sillylife.knocknock.services.AppDisposable
+import com.sillylife.knocknock.services.CallbackWrapper
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.ViewModelProvider
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.PermissionToken
@@ -17,14 +15,11 @@ import com.sillylife.knocknock.R
 import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.services.ContactWatchService
-import com.sillylife.knocknock.services.FirebaseAuthUserManager
-import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
+import com.sillylife.knocknock.managers.FirebaseAuthUserManager
 import com.sillylife.knocknock.utils.DexterUtil
-import com.sillylife.knocknock.views.fragments.HomeFragment
 import com.sillylife.knocknock.views.fragments.InviteFragment
 import com.sillylife.knocknock.views.module.MainActivityModule
 import com.sillylife.knocknock.views.viewmodal.MainActivityViewModel
-import com.sillylife.knocknock.views.viewmodelfactory.ActivityViewModelFactory
 
 
 class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
