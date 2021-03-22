@@ -13,6 +13,7 @@ import java.util.*
 @Parcelize
 data class Contact(
         @SerializedName("id") var id: Int? = null,
+        @SerializedName("user_ptr_id") var userPtrId: Int? = null,
         @SerializedName("name") var name: String? = null,
         @SerializedName("first_name") var firstName: String? = null,
         @SerializedName("middle_name") var middleName: String? = null,

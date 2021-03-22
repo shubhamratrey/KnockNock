@@ -10,6 +10,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "contacts")
 data class ContactsEntity(
         @PrimaryKey(autoGenerate = true) var id: Int = 0,
+        @ColumnInfo(name = "user_ptr_id") var userPtrId: Int? = null,
         var name: String? = null,
         @ColumnInfo(name = "first_name") var firstName: String? = null,
         @ColumnInfo(name = "middle_name") var middleName: String? = null,
