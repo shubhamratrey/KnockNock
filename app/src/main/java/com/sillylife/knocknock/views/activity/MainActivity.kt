@@ -22,8 +22,10 @@ import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.services.ContactWatchService
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
+import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.DexterUtil
 import com.sillylife.knocknock.views.fragments.HomeFragment
+import com.sillylife.knocknock.views.fragments.ProfileFragment
 import com.sillylife.knocknock.views.module.MainActivityModule
 import com.sillylife.knocknock.views.viewmodal.MainActivityViewModel
 import com.sillylife.knocknock.views.viewmodelfactory.ActivityViewModelFactory
@@ -32,8 +34,13 @@ import com.sillylife.knocknock.views.viewmodelfactory.ActivityViewModelFactory
 class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
     override fun onGetMeApiSuccess(response: UserResponse) {
         if (!isFinishing && response != null) {
-            Toast.makeText(this, "Logged In Successfully", Toast.LENGTH_SHORT).show()
-            openHomeFragment()
+            val profile = response.user
+            if (CommonUtil.textIsEmpty(profile?.firstName) || CommonUtil.textIsEmpty(profile?.lastName) || CommonUtil.textIsEmpty(profile?.originalAvatar) || CommonUtil.textIsEmpty(profile?.username)) {
+                openProfileFragment()
+            } else {
+                Toast.makeText(this, "Welcome back ${profile?.getFullName()}", Toast.LENGTH_SHORT).show()
+                openHomeFragment()
+            }
         }
     }
 
@@ -66,9 +73,14 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
                     ).setIsSmartLockEnabled(false).build(), RC_SIGN_IN
             )
         } else {
-            if (SharedPreferenceManager.getUser() != null) {
-                Toast.makeText(this, "Already Logged In", Toast.LENGTH_SHORT).show()
-                openHomeFragment()
+            val profile = SharedPreferenceManager.getUser()
+            if (profile != null) {
+                if (CommonUtil.textIsEmpty(profile?.firstName) || CommonUtil.textIsEmpty(profile?.lastName) || CommonUtil.textIsEmpty(profile?.originalAvatar) || CommonUtil.textIsEmpty(profile?.username)) {
+                    openProfileFragment()
+                } else {
+                    Toast.makeText(this, "Welcome back ${profile?.getFullName()}", Toast.LENGTH_SHORT).show()
+                    openHomeFragment()
+                }
             } else {
                 viewModel?.getMe()
             }
@@ -77,30 +89,32 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
 //            viewModel?.ringBell(1)
 //        }
 
-        try {
-            if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) { //Checking permission
-                //Starting service for registering ContactObserver
-                val intent = Intent(this@MainActivity, ContactWatchService::class.java)
-                startService(intent)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
-    fun openHomeFragment() {
+    private fun openHomeFragment() {
         DexterUtil.with(this, Manifest.permission.READ_CONTACTS).setListener(object :
                 DexterUtil.DexterUtilListener {
             override fun permissionGranted() {
                 replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
-//                replaceFragment(InviteFragment.newInstance(), InviteFragment.TAG)
-//                replaceFragment(SettingsFragment.newInstance(), SettingsFragment.TAG)
+                try {
+                    if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) { //Checking permission
+                        //Starting service for registering ContactObserver
+                        val intent = Intent(this@MainActivity, ContactWatchService::class.java)
+                        startService(intent)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
 
             override fun permissionDenied(token: PermissionToken?) {
 
             }
         }).check()
+    }
+
+    private fun openProfileFragment() {
+        replaceFragment(ProfileFragment.newInstance(), ProfileFragment.TAG)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -140,5 +154,17 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
     override fun onDestroy() {
         super.onDestroy()
         viewModel?.onDestroy()
+    }
+
+    override fun onBackPressed() {
+        val frag = supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)
+        if (frag != null) {
+            if ((frag as ProfileFragment).onBackPressed()) {
+                super.onBackPressed()
+            }
+        } else {
+            super.onBackPressed()
+        }
+
     }
 }

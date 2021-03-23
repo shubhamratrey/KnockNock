@@ -1,5 +1,6 @@
 package com.sillylife.knocknock.views.fragments
 
+import android.Manifest
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.karumi.dexter.PermissionToken
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.constants.RxEventType
@@ -21,6 +23,7 @@ import com.sillylife.knocknock.models.responses.HomeDataResponse
 import com.sillylife.knocknock.services.AppDisposable
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
+import com.sillylife.knocknock.utils.DexterUtil
 import com.sillylife.knocknock.utils.ImageManager
 import com.sillylife.knocknock.views.adapter.HomeAdapter
 import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.AVAILABLE_CONTACTS
@@ -47,6 +50,16 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        DexterUtil.with(requireActivity(), Manifest.permission.READ_CONTACTS).setListener(object :
+                DexterUtil.DexterUtilListener {
+            override fun permissionGranted() {
+
+            }
+
+            override fun permissionDenied(token: PermissionToken?) {
+
+            }
+        }).check()
         dbHelper = ViewModelProvider(activity!!).get(DBHelper::class.java)
         ContactsHelper.updatePhoneContactsToDB()
 

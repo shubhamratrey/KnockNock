@@ -129,21 +129,9 @@ class SettingsFragment : BaseFragment() {
             }
 
             override fun onProfileItem(type: Int, position: Int, view: View?) {
-
-                when (type) {
-                    SettingsAdapter.PROFILE_ITEM_USERNAME -> {
-
-
-                    }
-                    SettingsAdapter.PROFILE_ITEM_NAME -> {
-
-
-                    }
-                    SettingsAdapter.PROFILE_ITEM_AVATAR -> {
-
-                    }
+                if (isAdded && isVisible) {
+                    addFragment(ProfileFragment.newInstance(type.toString()), ProfileFragment.TAG)
                 }
-                addFragment(ProfileFragment.newInstance(type.toString()), ProfileFragment.TAG)
             }
 
         })

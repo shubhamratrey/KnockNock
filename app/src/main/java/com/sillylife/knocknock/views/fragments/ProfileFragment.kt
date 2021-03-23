@@ -99,9 +99,6 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
                 photo_layout.visibility = View.VISIBLE
                 ImageManager.loadImage(ivContactImage, profile?.originalAvatar)
                 ivContactImage.visibility = View.VISIBLE
-                userImageIv1?.setOnClickListener {
-                    choosePhotoFromGallery()
-                }
             }
             mType?.equals(SettingsAdapter.PROFILE_ITEM_NAME.toString()) == true -> {
                 tvFullnameHeader.text = requireContext().getString(R.string.correct_full_name)
@@ -120,8 +117,13 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
                 }
             }
             else -> {
-
+                toolbar.navigationIcon = null
+                toggleView()
             }
+        }
+
+        userImageIv1?.setOnClickListener {
+            choosePhotoFromGallery()
         }
 
         Selection.setSelection(etUsername.text, etUsername.text?.length!!)
@@ -153,6 +155,32 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
         }
     }
 
+    private fun toggleView() {
+        username_layout.visibility = View.GONE
+        name_layout.visibility = View.GONE
+        photo_layout.visibility = View.GONE
+        enableButton(true)
+        val profile = SharedPreferenceManager.getUser()
+        when {
+            CommonUtil.textIsEmpty(profile?.firstName) && CommonUtil.textIsEmpty(profile?.firstName) -> {
+                tvFullnameHeader.text = requireContext().getString(R.string.enter_full_name)
+                name_layout.visibility = View.VISIBLE
+            }
+            CommonUtil.textIsEmpty(profile?.originalAvatar) -> {
+                tvPhotoHeader.text = requireContext().getString(R.string.add_photo)
+                photo_layout.visibility = View.VISIBLE
+            }
+            CommonUtil.textIsEmpty(profile?.username) -> {
+                tvUsernameHeader.text = requireContext().getString(R.string.create_username)
+                etUsername.setText("@")
+                username_layout.visibility = View.VISIBLE
+            }
+            else -> {
+                replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+            }
+        }
+    }
+
     private fun validate(): Boolean {
         var isValid = true
         when {
@@ -179,21 +207,30 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
                 }
             }
             else -> {
-                if (CommonUtil.textIsEmpty(etFirstname?.text.toString())) {
-                    showToast("Please add first name", Toast.LENGTH_SHORT)
-                    isValid = false
-                }
-                if (CommonUtil.textIsEmpty(etLastname?.text.toString())) {
-                    showToast("Please add last name", Toast.LENGTH_SHORT)
-                    isValid = false
-                }
-                if (CommonUtil.textIsEmpty(etUsername?.text.toString())) {
-                    showToast("Please add username", Toast.LENGTH_SHORT)
-                    isValid = false
-                }
-                if (mAvatarFile == null) {
-                    showToast("Please add profile photo", Toast.LENGTH_SHORT)
-                    isValid = false
+                val profile = SharedPreferenceManager.getUser()
+                when {
+                    CommonUtil.textIsEmpty(profile?.firstName) && CommonUtil.textIsEmpty(profile?.firstName) -> {
+                        if (CommonUtil.textIsEmpty(etFirstname?.text.toString())) {
+                            showToast("Please add first name", Toast.LENGTH_SHORT)
+                            isValid = false
+                        }
+                        if (CommonUtil.textIsEmpty(etLastname?.text.toString())) {
+                            showToast("Please add last name", Toast.LENGTH_SHORT)
+                            isValid = false
+                        }
+                    }
+                    CommonUtil.textIsEmpty(profile?.originalAvatar) -> {
+                        if (mAvatarFile == null) {
+                            showToast("Please add profile photo", Toast.LENGTH_SHORT)
+                            isValid = false
+                        }
+                    }
+                    CommonUtil.textIsEmpty(profile?.username) -> {
+                        if (CommonUtil.textIsEmpty(etUsername?.text.toString())) {
+                            showToast("Please add username", Toast.LENGTH_SHORT)
+                            isValid = false
+                        }
+                    }
                 }
             }
         }
@@ -273,8 +310,20 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
     private fun enableButton(isEnabled: Boolean) {
         proceedProgress.visibility = if (isEnabled) View.GONE else View.VISIBLE
         button.isEnabled = isEnabled
-        if (mType != null) {
-            button.text = if (isEnabled) requireContext().getString(R.string.update) else ""
+        val profile = SharedPreferenceManager.getUser()
+        when {
+            mType != null -> {
+                button.text = if (isEnabled) requireContext().getString(R.string.update) else ""
+            }
+            CommonUtil.textIsEmpty(profile?.firstName) && CommonUtil.textIsEmpty(profile?.firstName) -> {
+                button.text = if (isEnabled) requireContext().getString(R.string.next) else ""
+            }
+            CommonUtil.textIsEmpty(profile?.originalAvatar) -> {
+                button.text = if (isEnabled) requireContext().getString(R.string.next) else ""
+            }
+            CommonUtil.textIsEmpty(profile?.username) -> {
+                button.text = if (isEnabled) requireContext().getString(R.string.done) else ""
+            }
         }
     }
 
@@ -295,6 +344,23 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
                 RxBus.publish(RxEvent.Action(RxEventType.PROFILE_UPDATED))
                 requireActivity().supportFragmentManager.popBackStack()
                 enableButton(true)
+            } else {
+                toggleView()
+            }
+        }
+    }
+
+    fun onBackPressed(): Boolean {
+        val profile = SharedPreferenceManager.getUser()
+        return when {
+            mType != null -> {
+                true
+            }
+            CommonUtil.textIsEmpty(profile?.firstName) && CommonUtil.textIsEmpty(profile?.firstName) && CommonUtil.textIsEmpty(profile?.originalAvatar) && CommonUtil.textIsEmpty(profile?.username) -> {
+                false
+            }
+            else -> {
+                true
             }
         }
     }
