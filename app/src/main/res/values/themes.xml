@@ -39,4 +39,22 @@
     <style name="Theme.KnockNock.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.KnockNock.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ProgressWhiteTheme" parent="Theme.KnockNock.NoActionBar">
+        <item name="colorAccent">@android:color/white</item>
+    </style>
+
+    <style name="ProgressTheme" parent="Theme.KnockNock.NoActionBar">
+        <item name="colorAccent">@color/black</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
+    <style name="ToolBarText">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="titleTextColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
 </resources>

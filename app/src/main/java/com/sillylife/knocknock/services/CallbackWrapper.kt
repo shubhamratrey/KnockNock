@@ -52,17 +52,18 @@ abstract class CallbackWrapper<T>() : DisposableObserver<T>() {
         if (br.code() in 200..299) {
             onSuccess(t)
         } else {
-            when (br.code()) {
-                HTTPStatus.NOT_FOUND.code -> {
-                    logFailure(HTTPStatus.NOT_FOUND.code, HTTPStatus.NOT_FOUND.message)
-                }
-                HTTPStatus.SERVER_ERROR.code -> {
-                    logFailure(HTTPStatus.SERVER_ERROR.code, HTTPStatus.SERVER_ERROR.message)
-                }
-                else -> {
-                    val restError = handleError(br.errorBody())
-                    logFailure(HTTPStatus.BAD_REQUEST.code, restError.errorMessage)
-                }
+            val code = br.code()
+            val responseBody = br.errorBody()
+            val error = getErrorMessage(responseBody)
+            if(error != null && error.isNotEmpty()){
+                logFailure(br.code(), error)
+            } else if (code == HTTPStatus.NOT_FOUND.code) {
+                logFailure(HTTPStatus.NOT_FOUND.code, HTTPStatus.NOT_FOUND.message)
+            } else if (code == HTTPStatus.SERVER_ERROR.code) {
+                logFailure(HTTPStatus.SERVER_ERROR.code, HTTPStatus.SERVER_ERROR.message)
+            } else {
+                val restError = handleError(br.errorBody())
+                logFailure(HTTPStatus.BAD_REQUEST.code, restError.errorMessage)
             }
         }
     }
@@ -77,12 +78,23 @@ abstract class CallbackWrapper<T>() : DisposableObserver<T>() {
         onFailure(code, message)
     }
 
-    private fun getErrorMessage(responseBody: ResponseBody?): String? {
-        return try {
+    fun getErrorMessage(responseBody: ResponseBody?): String? {
+        try {
             val jsonObject = JSONObject(responseBody!!.string())
-            jsonObject.getString("message")
+            if (jsonObject.has("error") && jsonObject.get("error") is JSONObject) {
+                val errorObject: JSONObject = jsonObject.getJSONObject("error")
+                if (errorObject.has("message")) {
+                    return errorObject.getString("message")
+                }
+            }
+            if (jsonObject.has("error_message")) {
+                return jsonObject.getString("error_message")
+            } else if (jsonObject.has("error_code")) {
+                return jsonObject.getString("error_code")
+            }
+            return jsonObject.getString("message")
         } catch (e: Exception) {
-            e.message
+            return e.message
         }
 
     }

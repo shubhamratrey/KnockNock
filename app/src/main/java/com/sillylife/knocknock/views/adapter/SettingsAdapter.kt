@@ -15,9 +15,12 @@ import com.sillylife.knocknock.constants.RemoteConfigKeys
 import com.sillylife.knocknock.managers.FirebaseAuthUserManager
 import com.sillylife.knocknock.managers.FirebaseRemoteConfigManager
 import com.sillylife.knocknock.models.SettingItem
+import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
+import com.sillylife.knocknock.utils.ImageManager
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_settings_login_logout.*
+import kotlinx.android.synthetic.main.item_settings_profile.*
 import kotlinx.android.synthetic.main.item_settings_recyclerview.*
 import kotlinx.android.synthetic.main.item_settings_social.*
 import kotlinx.android.synthetic.main.item_settings_urls.*
@@ -43,6 +46,10 @@ class SettingsAdapter(val context: Context,
         const val SOCIAL_ITEM_FB = -10
         const val SOCIAL_ITEM_TWITTER = -11
         const val SOCIAL_ITEM_INSTAGRAM = -12
+
+        const val PROFILE_ITEM_AVATAR = -13
+        const val PROFILE_ITEM_NAME = -14
+        const val PROFILE_ITEM_USERNAME = -15
     }
 
     init {
@@ -135,9 +142,32 @@ class SettingsAdapter(val context: Context,
                 }
             }
             PROFILE_ITEM -> {
-                holder.tvContactPlaceholder.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimensionPixelSize(R.dimen._47ssp).toFloat())
-                holder.tvContactPlaceholder.text = "SR"
+                setProfileData(holder)
             }
+        }
+    }
+
+    private fun setProfileData(holder: ViewHolder) {
+        val profile = SharedPreferenceManager.getUser()
+        if (CommonUtil.textIsNotEmpty(profile?.originalAvatar)) {
+            ImageManager.loadImage(holder.ivContactImage, profile?.originalAvatar)
+            holder.ivContactImage.visibility = View.VISIBLE
+        } else {
+            holder.tvContactPlaceholder.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimensionPixelSize(R.dimen._47ssp).toFloat())
+            holder.tvContactPlaceholder.text = profile?.getInitialsName()
+        }
+        holder.tvFullname.text = profile?.getFullName()
+        holder.tvUsername.text = profile?.getUserName()
+        holder.tvPhone.text = profile?.phone
+
+        holder.tvFullname.setOnClickListener {
+            listener.onProfileItem(PROFILE_ITEM_NAME, holder.adapterPosition, holder.containerView)
+        }
+        holder.tvUsername.setOnClickListener {
+            listener.onProfileItem(PROFILE_ITEM_USERNAME, holder.adapterPosition, holder.containerView)
+        }
+        holder.userImageIv1.setOnClickListener {
+            listener.onProfileItem(PROFILE_ITEM_AVATAR, holder.adapterPosition, holder.containerView)
         }
     }
 
@@ -154,6 +184,14 @@ class SettingsAdapter(val context: Context,
         }
     }
 
+    fun notifyProfileChange() {
+        for (i in commonItemLists.indices) {
+            if (commonItemLists[i] == PROFILE_ITEM) {
+                notifyItemChanged(i)
+                break
+            }
+        }
+    }
 
     fun updateItem(items: SettingItem) {
         for (i in commonItemLists.indices) {
@@ -207,5 +245,6 @@ class SettingsAdapter(val context: Context,
         fun onLogout(position: Int, view: View?)
         fun onLogin(position: Int, view: View?)
         fun onSocial(type: Int, position: Int, view: View?)
+        fun onProfileItem(type: Int, position: Int, view: View?)
     }
 }

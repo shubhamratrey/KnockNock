@@ -42,7 +42,9 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-
+        if (requestCode == Constants.GALLERY) {
+            RxBus.publish(RxEvent.ActivityResult(requestCode, resultCode, data))
+            return
+        }
     }
 }

@@ -1,7 +1,7 @@
 package com.sillylife.knocknock.constants
 
 enum class RxEventType {
-    RETAILER_DETAIL_UPDATED,
+    PROFILE_UPDATED,
     ORDER_SWIPED_PROCESSED,
     REFRESH_HOME,
     PRODUCT_UPDATED,

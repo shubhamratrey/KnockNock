@@ -13,6 +13,10 @@ import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.BundleConstants
 import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.constants.PackageNameConstants
+import com.sillylife.knocknock.constants.RxEventType
+import com.sillylife.knocknock.events.RxBus
+import com.sillylife.knocknock.events.RxEvent
+import com.sillylife.knocknock.services.AppDisposable
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.views.activity.WebViewActivity
 import com.sillylife.knocknock.views.adapter.SettingsAdapter
@@ -26,6 +30,7 @@ class SettingsFragment : BaseFragment() {
         fun newInstance() = SettingsFragment()
     }
 
+    private var appDisposable: AppDisposable = AppDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_settings, container, false)
@@ -36,9 +41,21 @@ class SettingsFragment : BaseFragment() {
         toolbar?.setNavigationOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+        appDisposable?.add(RxBus.listen(RxEvent.Action::class.java).subscribe { action ->
+            when (action.eventType) {
+                RxEventType.PROFILE_UPDATED -> {
+                    val adapter = rcvAll?.adapter as SettingsAdapter
+                    if (isAdded && adapter != null) {
+                        adapter.notifyProfileChange()
+                    }
+                }
+            }
+        })
+        setAdapter()
+    }
+
+    private fun setAdapter() {
         val adapter = SettingsAdapter(context = requireContext(), object : SettingsAdapter.SettingListener {
-
-
             override fun onWebUrlClicked(url: String, position: Int, view: View?) {
                 startActivity(Intent(requireContext(), WebViewActivity::class.java).putExtra(BundleConstants.WEB_URL, url))
             }
@@ -111,8 +128,31 @@ class SettingsFragment : BaseFragment() {
                 }
             }
 
+            override fun onProfileItem(type: Int, position: Int, view: View?) {
+
+                when (type) {
+                    SettingsAdapter.PROFILE_ITEM_USERNAME -> {
+
+
+                    }
+                    SettingsAdapter.PROFILE_ITEM_NAME -> {
+
+
+                    }
+                    SettingsAdapter.PROFILE_ITEM_AVATAR -> {
+
+                    }
+                }
+                addFragment(ProfileFragment.newInstance(type.toString()), ProfileFragment.TAG)
+            }
+
         })
         rcvAll?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         rcvAll?.adapter = adapter
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        appDisposable.dispose()
     }
 }

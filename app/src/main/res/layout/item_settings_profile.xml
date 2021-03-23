@@ -44,7 +44,7 @@
             android:fontFamily="@font/notosans_bold"
             android:padding="4dp"
             android:requiresFadingEdge="horizontal"
-            android:singleLine="true"
+            android:maxLines="2"
             android:text="Shubham Ratrey"
             android:textColor="@color/swamp"
             android:textSize="@dimen/_16ssp"
@@ -62,7 +62,7 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/userStatus1"
+        android:id="@+id/tvUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -71,18 +71,39 @@
         android:background="?selectableItemBackground"
         android:ellipsize="end"
         android:fontFamily="@font/notosans_medium"
-        android:maxLines="2"
+        android:maxLines="1"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:paddingBottom="8dp"
         android:requiresFadingEdge="horizontal"
-        android:text="+918109212607"
+        android:text="/@ratrey08"
         android:textColor="@color/swamp"
         android:textSize="@dimen/_12ssp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/userImageIv1"
         app:layout_constraintTop_toBottomOf="@+id/ll_user_name1"
-        tools:text="ADD A SHORT BIO" />
+        tools:text="ratrey08" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPhone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="?selectableItemBackground"
+        android:ellipsize="end"
+        android:fontFamily="@font/notosans_medium"
+        android:maxLines="1"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="8dp"
+        android:requiresFadingEdge="horizontal"
+        android:text="+918109212607"
+        android:textColor="@color/river_bed_40"
+        android:textSize="@dimen/_12ssp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvUsername"
+        app:layout_constraintTop_toBottomOf="@+id/tvUsername"
+        tools:text="+918109212607" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

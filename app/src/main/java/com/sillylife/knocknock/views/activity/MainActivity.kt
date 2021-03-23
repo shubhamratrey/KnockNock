@@ -8,20 +8,25 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.ViewModelProvider
+import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.PermissionToken
 import com.sillylife.knocknock.R
+import com.sillylife.knocknock.constants.Constants
+import com.sillylife.knocknock.events.RxBus
+import com.sillylife.knocknock.events.RxEvent
+import com.sillylife.knocknock.managers.FirebaseAuthUserManager
 import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.services.ContactWatchService
-import com.sillylife.knocknock.managers.FirebaseAuthUserManager
+import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.DexterUtil
 import com.sillylife.knocknock.views.fragments.HomeFragment
-import com.sillylife.knocknock.views.fragments.InviteFragment
-import com.sillylife.knocknock.views.fragments.SettingsFragment
 import com.sillylife.knocknock.views.module.MainActivityModule
 import com.sillylife.knocknock.views.viewmodal.MainActivityViewModel
+import com.sillylife.knocknock.views.viewmodelfactory.ActivityViewModelFactory
 
 
 class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
@@ -49,26 +54,25 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        openHomeFragment()
-//        viewModel = ViewModelProvider(this, ActivityViewModelFactory(this)).get(MainActivityViewModel::class.java)
-//        if (!FirebaseAuthUserManager.isUserLoggedIn()) {
-//            val providers = arrayListOf(
-//                    AuthUI.IdpConfig.PhoneBuilder().build(),
-//                    AuthUI.IdpConfig.GoogleBuilder().build()
-//            )
-//            startActivityForResult(
-//                    AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
-//                            providers
-//                    ).setIsSmartLockEnabled(false).build(), RC_SIGN_IN
-//            )
-//        } else {
-//            if (SharedPreferenceManager.getUser() != null) {
-//                Toast.makeText(this, "Already Logged In", Toast.LENGTH_SHORT).show()
-//                openHomeFragment()
-//            } else {
-//                viewModel?.getMe()
-//            }
-//        }
+        viewModel = ViewModelProvider(this, ActivityViewModelFactory(this)).get(MainActivityViewModel::class.java)
+        if (!FirebaseAuthUserManager.isUserLoggedIn()) {
+            val providers = arrayListOf(
+                    AuthUI.IdpConfig.PhoneBuilder().build(),
+                    AuthUI.IdpConfig.GoogleBuilder().build()
+            )
+            startActivityForResult(
+                    AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
+                            providers
+                    ).setIsSmartLockEnabled(false).build(), RC_SIGN_IN
+            )
+        } else {
+            if (SharedPreferenceManager.getUser() != null) {
+                Toast.makeText(this, "Already Logged In", Toast.LENGTH_SHORT).show()
+                openHomeFragment()
+            } else {
+                viewModel?.getMe()
+            }
+        }
 //        ringBell?.setOnClickListener {
 //            viewModel?.ringBell(1)
 //        }
@@ -84,7 +88,7 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         }
     }
 
-    fun openHomeFragment(){
+    fun openHomeFragment() {
         DexterUtil.with(this, Manifest.permission.READ_CONTACTS).setListener(object :
                 DexterUtil.DexterUtilListener {
             override fun permissionGranted() {
@@ -101,7 +105,10 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+        if (requestCode == Constants.GALLERY) {
+            RxBus.publish(RxEvent.ActivityResult(requestCode, resultCode, data))
+            return
+        }
         if (requestCode == RC_SIGN_IN) {
             val response = IdpResponse.fromResultIntent(data)
 

@@ -12,7 +12,7 @@ import retrofit2.http.*
 
 interface IAPIService {
 
-    @GET("${NetworkConstants.V1}/users/me/")
+    @GET("${NetworkConstants.V1}/knocknock/me/")
     fun getMe(@QueryMap queryMap: Map<String, String>): Observable<Response<UserResponse>>
 
     @FormUrlEncoded
@@ -34,12 +34,12 @@ interface IAPIService {
     fun getHomeData(@QueryMap queryMap: Map<String, String>): Observable<Response<HomeDataResponse>>
 
     @Multipart
-    @POST("${NetworkConstants.V1}/users/me/update/")
+    @POST("${NetworkConstants.V1}/knocknock/me/update/")
     fun updateProfile(
-            @Part("name") name: RequestBody?,
-            @Part avatar: MultipartBody.Part?,
-            @Part("phone") phone: RequestBody?,
-            @Part("email") email: RequestBody?
+            @Part("first_name") firstName: RequestBody?,
+            @Part("last_name") lastName: RequestBody?,
+            @Part("username") username: RequestBody?,
+            @Part avatar: MultipartBody.Part?
     ): Observable<Response<UserResponse>>
 
     @FormUrlEncoded
@@ -54,7 +54,6 @@ interface IAPIService {
     fun updateOrderItem(@Path("order_id") orderId: Int,
                         @Field("accepted_order_item_ids") accepted_ids: List<Int>,
                         @Field("rejected_order_item_ids") rejected_ids: List<Int>): Observable<Response<GenericResponse>>
-
 
 
 }

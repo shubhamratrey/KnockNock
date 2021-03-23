@@ -41,9 +41,9 @@
                     android:fontFamily="@font/notosans_medium"
                     android:gravity="center"
                     android:text="Settings"
-                    android:visibility="invisible"
                     android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="invisible" />
 
             </androidx.appcompat.widget.Toolbar>
 

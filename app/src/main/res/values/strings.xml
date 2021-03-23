@@ -30,5 +30,18 @@
     <string name="joined">Joined</string>
     <string name="login">Log in</string>
     <string name="logout">Log out</string>
+    <string name="enter_full_name">Enter your full name</string>
+    <string name="create_username">Create your username</string>
+    <string name="add_photo">Add a photo</string>
+    <string name="change_photo">Change your photo?</string>
+    <string name="change_username">Change your username?</string>
+    <string name="correct_full_name">Correct your full name?</string>
+    <string name="fullname_footer">People use real names on KnockNock :) Thnx!</string>
+    <string name="first">First</string>
+    <string name="last">Last</string>
+    <string name="update">Update</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="username">\@username</string>
 
 </resources>

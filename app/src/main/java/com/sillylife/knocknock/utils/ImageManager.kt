@@ -100,7 +100,7 @@ object ImageManager {
         )
     }
 
-    fun loadImageFile(imageView: ImageView, file: File) {
+    fun loadImage(imageView: ImageView, file: File) {
         Glide.with(context).setDefaultRequestOptions(getRequestOptions(imageView.drawable)).load(file).into(imageView)
     }
 

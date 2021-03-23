@@ -10,15 +10,24 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
+import com.sillylife.knocknock.constants.RxEventType
 import com.sillylife.knocknock.database.DBHelper
+import com.sillylife.knocknock.events.RxBus
+import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
 import com.sillylife.knocknock.models.responses.HomeDataResponse
+import com.sillylife.knocknock.services.AppDisposable
+import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
+import com.sillylife.knocknock.utils.CommonUtil
+import com.sillylife.knocknock.utils.ImageManager
 import com.sillylife.knocknock.views.adapter.HomeAdapter
 import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.AVAILABLE_CONTACTS
 import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.RECENTLY_CONNECTED_CONTACTS
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.cvContactImage
+import kotlinx.android.synthetic.main.layout_contact.*
 
 class HomeFragment : BaseFragment() {
 
@@ -27,6 +36,7 @@ class HomeFragment : BaseFragment() {
         fun newInstance() = HomeFragment()
     }
 
+    private var appDisposable: AppDisposable = AppDisposable()
     private var dbHelper: DBHelper? = null
     private var adapter: HomeAdapter? = null
     var recentlyListenedRowExists: Boolean = false
@@ -69,6 +79,25 @@ class HomeFragment : BaseFragment() {
         fabButton?.setOnClickListener {
             addFragment(InviteFragment.newInstance(), InviteFragment.TAG)
         }
+        setPhoto()
+        appDisposable?.add(RxBus.listen(RxEvent.Action::class.java).subscribe { action ->
+            when (action.eventType) {
+                RxEventType.PROFILE_UPDATED -> {
+                    setPhoto()
+                }
+            }
+        })
+    }
+
+    private fun setPhoto() {
+        val profile = SharedPreferenceManager.getUser()
+        if (CommonUtil.textIsNotEmpty(profile?.originalAvatar)) {
+            ImageManager.loadImage(ivContactImage, profile?.originalAvatar)
+            ivContactImage.visibility = View.VISIBLE
+        } else {
+//            tvContactPlaceholder.setTextSize(TypedValue.COMPLEX_UNIT_PX, requireContext().resources.getDimensionPixelSize(R.dimen._47ssp).toFloat())
+            tvContactPlaceholder.text = profile?.getInitialsName()
+        }
     }
 
     private fun setHomeAdapter(homeDataResponse: HomeDataResponse) {
@@ -93,5 +122,10 @@ class HomeFragment : BaseFragment() {
         rcvAll?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         ViewCompat.setNestedScrollingEnabled(rcvAll, false)
         rcvAll?.adapter = adapter
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        appDisposable.dispose()
     }
 }
