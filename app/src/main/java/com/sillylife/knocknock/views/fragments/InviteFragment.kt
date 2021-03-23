@@ -30,7 +30,6 @@ class InviteFragment : BaseFragment() {
         fun newInstance() = InviteFragment()
     }
 
-//    private var dbHelper: DBHelper? = null
     private var adapter: InviteAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

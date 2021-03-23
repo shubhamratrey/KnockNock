@@ -1,8 +1,10 @@
 package com.sillylife.knocknock.services
 
 import com.sillylife.knocknock.constants.NetworkConstants
+import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.HomeDataResponse
+import com.sillylife.knocknock.models.responses.SyncedContactsResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import io.reactivex.Observable
 import okhttp3.MultipartBody
@@ -50,10 +52,7 @@ interface IAPIService {
 
 
     @FormUrlEncoded
-    @POST("${NetworkConstants.V1}/order/{order_id}/update-item-status/")
-    fun updateOrderItem(@Path("order_id") orderId: Int,
-                        @Field("accepted_order_item_ids") accepted_ids: List<Int>,
-                        @Field("rejected_order_item_ids") rejected_ids: List<Int>): Observable<Response<GenericResponse>>
-
+    @POST("${NetworkConstants.V1}/knocknock/sync-contacts/")
+    fun syncContacts(@Field("phone_numbers") phoneNumbers: ArrayList<String>): Observable<Response<SyncedContactsResponse>>
 
 }

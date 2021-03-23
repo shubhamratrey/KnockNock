@@ -128,6 +128,10 @@ object ContactsHelper {
         mContactsDao?.updateContactInvited(true, phone)
     }
 
+    fun updateSomeData(availableOnPlatform: Boolean, image: String, username: String, userPtrId: Int, phone: String) {
+        mContactsDao?.updateSomeData(availableOnPlatform, image, username, userPtrId, phone)
+    }
+
     fun updatePhoneContactsToDB() {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             return

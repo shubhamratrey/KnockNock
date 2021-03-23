@@ -1,11 +1,12 @@
 package com.sillylife.knocknock.views.fragments
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
 import com.sillylife.knocknock.models.responses.HomeDataResponse
+import com.sillylife.knocknock.models.responses.SyncedContactsResponse
 import com.sillylife.knocknock.services.AppDisposable
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
@@ -28,11 +30,15 @@ import com.sillylife.knocknock.utils.ImageManager
 import com.sillylife.knocknock.views.adapter.HomeAdapter
 import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.AVAILABLE_CONTACTS
 import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.RECENTLY_CONNECTED_CONTACTS
+import com.sillylife.knocknock.views.module.HomeFragmentModule
+import com.sillylife.knocknock.views.viewmodal.HomeFragmentViewModel
+import com.sillylife.knocknock.views.viewmodelfactory.FragmentViewModelFactory
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.cvContactImage
 import kotlinx.android.synthetic.main.layout_contact.*
 
-class HomeFragment : BaseFragment() {
+
+class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
 
     companion object {
         val TAG = HomeFragment::class.java.simpleName
@@ -40,6 +46,7 @@ class HomeFragment : BaseFragment() {
     }
 
     private var appDisposable: AppDisposable = AppDisposable()
+    private var viewModel: HomeFragmentViewModel? = null
     private var dbHelper: DBHelper? = null
     private var adapter: HomeAdapter? = null
     var recentlyListenedRowExists: Boolean = false
@@ -50,6 +57,8 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(this, FragmentViewModelFactory(this@HomeFragment))
+                .get(HomeFragmentViewModel::class.java)
         DexterUtil.with(requireActivity(), Manifest.permission.READ_CONTACTS).setListener(object :
                 DexterUtil.DexterUtilListener {
             override fun permissionGranted() {
@@ -82,6 +91,15 @@ class HomeFragment : BaseFragment() {
             items.add(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = recentlyConnectedContactList, false))
         }
         val contact = ContactsHelper.getDBPhoneContactList()
+
+        val temp: ArrayList<String> = arrayListOf()
+        contact.forEach {
+            temp.add(it.phone!!)
+        }
+
+        viewModel?.getPhoneContacts(temp)
+
+
 //        val contact = ContactsHelper.getAvailableContactList()
         items.add(HomeDataItem(type = AVAILABLE_CONTACTS, title = "Phone Contacts", contacts = contact, false))
         setHomeAdapter(HomeDataResponse(items = items, hasMore = false))
@@ -129,7 +147,7 @@ class HomeFragment : BaseFragment() {
                 }
             }
             if (type == Constants.IMPRESSION) {
-                Log.d("IMPRESSION", "Contact - $it | Source - $it2")
+//                Log.d("IMPRESSION", "Contact - $it | Source - $it2")
             }
         }
         rcvAll?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -140,5 +158,48 @@ class HomeFragment : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         appDisposable.dispose()
+        viewModel?.onDestroy()
+    }
+
+    override fun onContactPhoneSyncSuccess(response: SyncedContactsResponse) {
+        if (isAdded && response != null) {
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                return
+            }
+
+            val dbContacts = ContactsHelper.getDBPhoneContactList()
+            val availableContacts = response.contacts!!
+
+            for (availableContact in availableContacts) {
+                var toUpdate = false
+                var tempContact = Contact()
+                for (dbContact in dbContacts) {
+                    if (availableContact.phone == dbContact.phone) {
+                        toUpdate = true
+                        tempContact = dbContact.copy()
+                        break
+                    }
+                }
+                if (toUpdate) {
+                    if (CommonUtil.textIsNotEmpty(availableContact.image)) {
+                        tempContact.image = availableContact.image
+                    }
+                    if (CommonUtil.textIsNotEmpty(availableContact.username)) {
+                        tempContact.username = availableContact.username
+                    }
+                    if (availableContact.userPtrId != null) {
+                        tempContact.userPtrId = availableContact.userPtrId
+                    }
+                    if (availableContact.availableOnPlatform != null) {
+                        tempContact.availableOnPlatform = availableContact.availableOnPlatform
+                    }
+                    ContactsHelper.updateSomeData(availableOnPlatform = tempContact.availableOnPlatform!!, image = tempContact.image!!, userPtrId = tempContact.userPtrId!!, phone = tempContact.phone!!, username = tempContact.username!!)
+                }
+            }
+        }
+    }
+
+    override fun onApiFailure(statusCode: Int, message: String) {
+
     }
 }

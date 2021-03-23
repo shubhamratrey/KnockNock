@@ -18,6 +18,8 @@ object MapDbEntities {
             entity.middleName = contacts.middleName
         if (CommonUtil.textIsNotEmpty(contacts.lastName))
             entity.lastName = contacts.lastName
+        if (CommonUtil.textIsNotEmpty(contacts.username))
+            entity.username = contacts.username
         if (CommonUtil.textIsNotEmpty(contacts.phone))
             entity.phone = contacts.phone
         if (CommonUtil.textIsNotEmpty(contacts.image))

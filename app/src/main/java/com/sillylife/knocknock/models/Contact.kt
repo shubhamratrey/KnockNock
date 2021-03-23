@@ -18,6 +18,7 @@ data class Contact(
         @SerializedName("first_name") var firstName: String? = null,
         @SerializedName("middle_name") var middleName: String? = null,
         @SerializedName("last_name") var lastName: String? = null,
+        @SerializedName("username") var username: String? = null,
         @SerializedName("phone") var phone: String? = null,
         @SerializedName("image") var image: String? = null,
         @SerializedName("last_connected") var lastConnected: Date? = null,
@@ -38,8 +39,8 @@ data class Contact(
                 .mapNotNull {
                     it.firstOrNull()?.toUpperCase().toString()
                 }.take(2)
-                .reduce {
-                    acc, s -> acc + s
+                .reduce { acc, s ->
+                    acc + s
                 }
     }
 }

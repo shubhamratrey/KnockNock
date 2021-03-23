@@ -23,6 +23,9 @@ interface ContactsDao : BaseDao<ContactsEntity> {
     @Query("UPDATE contacts SET last_connected = :timeStamp where phone = :phone")
     fun updateLastConnected(timeStamp: Long, phone: String)
 
+    @Query("UPDATE contacts SET available_on_platform = :availableOnPlatform, image =:image, username =:username, user_ptr_id=:userPtrId where phone = :phone")
+    fun updateSomeData(availableOnPlatform: Boolean, image: String, username: String, userPtrId: Int, phone: String)
+
     @Query("UPDATE contacts SET has_invited = :invited where phone = :phone")
     fun updateContactInvited(invited: Boolean, phone: String)
 

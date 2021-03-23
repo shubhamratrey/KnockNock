@@ -15,6 +15,7 @@ data class ContactsEntity(
         @ColumnInfo(name = "first_name") var firstName: String? = null,
         @ColumnInfo(name = "middle_name") var middleName: String? = null,
         @ColumnInfo(name = "last_name") var lastName: String? = null,
+        @ColumnInfo(name = "username") var username: String? = null,
         var phone: String? = null,
         var image: String? = null,
         @ColumnInfo(name = "last_connected") var lastConnected: Long? = null,
