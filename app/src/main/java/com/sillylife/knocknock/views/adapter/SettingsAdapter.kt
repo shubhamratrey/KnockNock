@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.item_settings_profile.*
 import kotlinx.android.synthetic.main.item_settings_recyclerview.*
 import kotlinx.android.synthetic.main.item_settings_recyclerview.titleTv
 import kotlinx.android.synthetic.main.item_settings_social.*
-import kotlinx.android.synthetic.main.item_settings_urls.tvWebTitle
+import kotlinx.android.synthetic.main.item_settings_urls.*
 import kotlinx.android.synthetic.main.item_settings_version.*
 import kotlinx.android.synthetic.main.layout_contact.*
 import org.json.JSONException
@@ -220,7 +220,7 @@ class SettingsAdapter(val context: Context,
         }
     }
 
-    fun notifyItemChange(itemId:Int) {
+    fun notifyItemChange(itemId: Int) {
         for (i in commonItemLists.indices) {
             if (commonItemLists[i] == itemId) {
                 notifyItemChanged(i)

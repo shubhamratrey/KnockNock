@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
@@ -31,6 +32,7 @@ import com.sillylife.knocknock.views.adapter.SettingsAdapter
 import com.sillylife.knocknock.views.module.ProfileModule
 import com.sillylife.knocknock.views.viewmodal.ProfileViewModel
 import com.sillylife.knocknock.views.viewmodelfactory.FragmentViewModelFactory
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_invite.toolbar
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.layout_contact.*
@@ -296,10 +298,18 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
                     when (requestCode) {
                         Constants.GALLERY ->
                             if (data != null) {
-                                val file = FileUtils.getFile(requireContext(), data.data)!!
-                                mAvatarFile = file
-                                ImageManager.loadImage(ivContactImage, file)
-                                ivContactImage.visibility = View.VISIBLE
+                                var filePath: String? = data.data.toString()
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    filePath = FileUtils.getPath(requireContext(), data.data!!)
+                                }
+                                if (filePath != null) {
+                                    val file: File? = File(filePath)
+                                    if (file != null && file.exists()) {
+                                        mAvatarFile = file
+                                        ImageManager.loadImage(ivContactImage, file)
+                                        ivContactImage.visibility = View.VISIBLE
+                                    }
+                                }
                             }
                     }
                 }

@@ -5,8 +5,8 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +32,7 @@ import com.sillylife.knocknock.views.activity.WebViewActivity
 import com.sillylife.knocknock.views.adapter.SettingsAdapter
 import kotlinx.android.synthetic.main.fragment_home.rcvAll
 import kotlinx.android.synthetic.main.fragment_invite.*
+import java.io.File
 
 class SettingsFragment : BaseFragment() {
 
@@ -75,10 +76,19 @@ class SettingsFragment : BaseFragment() {
                     when (requestCode) {
                         Constants.AUDIO_LIBRARY ->
                             if (data != null) {
-                                SharedPreferenceManager.setKnockTone(data.dataString!!)
-                                val adapter = rcvAll?.adapter as SettingsAdapter
-                                if (isAdded && adapter != null) {
-                                    adapter.notifyItemChange(SettingsAdapter.NOTIFICATION_ITEM)
+                                var filePath: String? = data.data.toString()
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    filePath = FileUtils.getPath(requireContext(), data.data!!)
+                                }
+                                if (filePath != null) {
+                                    val file: File? = File(filePath)
+                                    if (file != null && file.exists()) {
+                                        SharedPreferenceManager.setKnockTone(file.absolutePath)
+                                        val adapter = rcvAll?.adapter as SettingsAdapter
+                                        if (isAdded && adapter != null) {
+                                            adapter.notifyItemChange(SettingsAdapter.NOTIFICATION_ITEM)
+                                        }
+                                    }
                                 }
                             }
                     }
@@ -192,22 +202,30 @@ class SettingsFragment : BaseFragment() {
         DexterUtil.with(getBaseActivity(), Manifest.permission.READ_EXTERNAL_STORAGE).setListener(object :
                 DexterUtil.DexterUtilListener {
             override fun permissionGranted() {
-                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                galleryIntent.type = "audio/*"
-                galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-
-                try {
-                    activity?.startActivityForResult(galleryIntent, Constants.AUDIO_LIBRARY)
-                } catch (e: ActivityNotFoundException) {
-                    val getIntent = Intent(Intent.ACTION_GET_CONTENT)
-                    getIntent.type = "audio/*"
-                    galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
-
-                    val chooserIntent = Intent.createChooser(getIntent, "Select Image")
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(galleryIntent))
-
-                    activity?.startActivityForResult(chooserIntent, Constants.AUDIO_LIBRARY)
+                val intent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    Intent(Intent.ACTION_GET_CONTENT)
+                } else {
+                    Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE)
                 }
+                intent.type = "audio/*"
+//
+//                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//                galleryIntent.type = "audio/*"
+//                galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+//
+//                try {
+//                    activity?.startActivityForResult(galleryIntent, Constants.AUDIO_LIBRARY)
+//                } catch (e: ActivityNotFoundException) {
+//                    val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+//                    getIntent.type = "audio/*"
+//                    galleryIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, false);
+//
+//                    val chooserIntent = Intent.createChooser(getIntent, "Select Image")
+//                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(galleryIntent))
+//
+//                    activity?.startActivityForResult(chooserIntent, Constants.AUDIO_LIBRARY)
+//                }
+                activity?.startActivityForResult(intent, Constants.AUDIO_LIBRARY)
                 showToast("permissionGranted", Toast.LENGTH_SHORT)
             }
 
