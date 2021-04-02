@@ -16,6 +16,8 @@ object SharedPreferenceManager {
     private const val FCM_REGISTERED_USER = "fcm_registered_user"
     private const val USER = "user"
     private const val APP_LANGUAGE = "app_language"
+    private const val PAUSE_NOTIFICATIONS = "pause_notifications"
+    private const val KNOCK_TONE = "knock_tone"
 
 
     fun storeFirebaseAuthToken(firebaseAuthToken: String) {
@@ -56,4 +58,23 @@ object SharedPreferenceManager {
         sharedPreferences.setString(APP_LANGUAGE, language)
     }
 
+    fun isNotificationsPaused(): Boolean {
+        return sharedPreferences.getBoolean(PAUSE_NOTIFICATIONS, false)
+    }
+
+    fun pauseNotifications() {
+        sharedPreferences.setBoolean(PAUSE_NOTIFICATIONS, false)
+    }
+
+    fun resumeNotifications() {
+        sharedPreferences.setBoolean(PAUSE_NOTIFICATIONS, true)
+    }
+
+    fun getKnockTone(): String? {
+        return sharedPreferences.getString(KNOCK_TONE, null)
+    }
+
+    fun setKnockTone(url: String) {
+        sharedPreferences.setString(KNOCK_TONE, url)
+    }
 }

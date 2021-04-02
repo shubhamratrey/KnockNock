@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -23,6 +22,7 @@ import com.sillylife.knocknock.constants.BundleConstants
 import com.sillylife.knocknock.constants.IntentConstants
 import com.sillylife.knocknock.constants.NotificationKeys
 import com.sillylife.knocknock.managers.FirebaseAuthUserManager
+import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.ImageManager
 import com.sillylife.knocknock.views.activity.MainActivity
@@ -38,7 +38,8 @@ class FirebaseMessaging : FirebaseMessagingService() {
         // Also if you intend on generating your own notifications as a result of a received FCM
         // message, here is where that should be initiated.
         Log.d(TAG, remoteMessage.data.toString() + "  " + remoteMessage.notification.toString())
-        if (remoteMessage.data != null) {
+        val isNotificationEnabled = !SharedPreferenceManager.isNotificationsPaused()
+        if (remoteMessage.data != null && isNotificationEnabled) {
             showNotification(remoteMessage.data, applicationContext)
         }
     }
@@ -110,6 +111,22 @@ class FirebaseMessaging : FirebaseMessagingService() {
             }
         }
 
+        //Notification sound
+        val customSound = SharedPreferenceManager.getKnockTone()
+        if (CommonUtil.textIsNotEmpty(customSound)) {
+            try {
+//                val sound = Uri.parse("android.resource://" + applicationContext.packageName + "/" + R.raw.cuckoo_sms)
+                val r = RingtoneManager.getRingtone(applicationContext, Uri.parse(customSound))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    r.volume = 1.0f
+                }
+                r.play()
+                Log.d(TAG, r.getTitle(context) + r.audioAttributes)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
         if (mDescription != null) {
             notificationBuilder.setContentText(mDescription)
             notificationBuilder.setContentInfo(mDescription)
@@ -123,6 +140,7 @@ class FirebaseMessaging : FirebaseMessagingService() {
         if (image != null) {
             notificationBuilder.setLargeIcon(image)
         }
+        notificationBuilder.setSound(null)
 
         if (mLayoutType != null && mLayoutType == NotificationKeys.LAYOUT_TYPES.TEXT_DESC_ACTION_BTN) {
             notificationBuilder.addAction(0, "Click here to view", getContentIntent(uri, mNotificationId, notificationId, context))
@@ -139,12 +157,12 @@ class FirebaseMessaging : FirebaseMessagingService() {
         adminChannel.enableLights(true)
         adminChannel.lightColor = Color.RED
         adminChannel.enableVibration(true)
-        val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val audioAttributes = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                .build()
-        adminChannel.setSound(sound, audioAttributes)
+//        val sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+//        val audioAttributes = AudioAttributes.Builder()
+//                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+//                .build()
+//        adminChannel.setSound(null, audioAttributes)
 
         if (channelDescription != null) {
             adminChannel.description = channelDescription

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/linen"
+    android:orientation="vertical"
+    android:paddingTop="25dp"
+    tools:background="@color/linen">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/titleTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/notosans_regular"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:text="Notifications"
+        android:textColor="@color/river_bed_40"
+        android:textSize="@dimen/_10ssp"
+        android:visibility="visible" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical"
+            android:paddingTop="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:alpha="1"
+                    android:fontFamily="@font/notosans_regular"
+                    android:text="Knock Tone"
+                    android:textColor="@color/swamp"
+                    android:textSize="@dimen/_14ssp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvKnockToneTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginStart="@dimen/_25sdp"
+                    android:layout_weight="1"
+                    android:alpha="1"
+                    android:ellipsize="middle"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="end"
+                    android:maxLines="1"
+                    android:text="@string/knock_tone"
+                    android:textColor="@color/silver_sand"
+                    android:textSize="@dimen/_14ssp"
+                    tools:text="Titanic song" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/dividerSettingUrls"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.5"
+                android:background="@color/river_bed_20" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/notificationSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/notosans_regular"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:text="@string/pause_notifications"
+                android:textColor="@color/swamp"
+                android:textSize="@dimen/_14ssp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

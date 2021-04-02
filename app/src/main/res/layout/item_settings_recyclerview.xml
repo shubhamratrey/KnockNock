@@ -5,25 +5,28 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/fui_transparent"
+    android:background="@color/linen"
     android:orientation="vertical"
+    android:paddingTop="25dp"
     tools:background="@color/linen">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/titleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        tools:text="Current Task" />
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/notosans_regular"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
+        android:textColor="@color/river_bed_40"
+        android:textSize="@dimen/_10ssp"
+        android:visibility="gone" />
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="16dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="12dp"
@@ -33,10 +36,10 @@
             android:id="@+id/rcvAll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
             android:background="@color/white"
-            tools:listitem="@layout/item_settings_urls"
-            tools:itemCount="2" />
+            android:clipToPadding="false"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_settings_urls" />
     </com.google.android.material.card.MaterialCardView>
 
 

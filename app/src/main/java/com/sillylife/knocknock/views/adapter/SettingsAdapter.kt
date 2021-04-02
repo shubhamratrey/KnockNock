@@ -2,6 +2,7 @@ package com.sillylife.knocknock.views.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -17,13 +18,16 @@ import com.sillylife.knocknock.managers.FirebaseRemoteConfigManager
 import com.sillylife.knocknock.models.SettingItem
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
+import com.sillylife.knocknock.utils.FileUtils
 import com.sillylife.knocknock.utils.ImageManager
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.item_settings_login_logout.*
+import kotlinx.android.synthetic.main.item_settings_notification.*
 import kotlinx.android.synthetic.main.item_settings_profile.*
 import kotlinx.android.synthetic.main.item_settings_recyclerview.*
+import kotlinx.android.synthetic.main.item_settings_recyclerview.titleTv
 import kotlinx.android.synthetic.main.item_settings_social.*
-import kotlinx.android.synthetic.main.item_settings_urls.*
+import kotlinx.android.synthetic.main.item_settings_urls.tvWebTitle
 import kotlinx.android.synthetic.main.item_settings_version.*
 import kotlinx.android.synthetic.main.layout_contact.*
 import org.json.JSONException
@@ -54,6 +58,7 @@ class SettingsAdapter(val context: Context,
 
     init {
         commonItemLists.add(PROFILE_ITEM)
+        commonItemLists.add(NOTIFICATION_ITEM)
         val jsonString = FirebaseRemoteConfigManager.getValue(RemoteConfigKeys.KK_SETTING_LISTS)
         try {
             val jsonObject = JSONObject(jsonString)
@@ -83,6 +88,7 @@ class SettingsAdapter(val context: Context,
             commonItemLists[position] is Int -> {
                 when (commonItemLists[position]) {
                     LOGIN_LOGOUT_ITEM -> LOGIN_LOGOUT_ITEM
+                    NOTIFICATION_ITEM -> NOTIFICATION_ITEM
                     SOCIAL_ITEM -> SOCIAL_ITEM
                     PROFILE_ITEM -> PROFILE_ITEM
                     else -> VERSION_CODE_ITEM
@@ -97,6 +103,7 @@ class SettingsAdapter(val context: Context,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val v = when (viewType) {
+            NOTIFICATION_ITEM -> inflater.inflate(R.layout.item_settings_notification, parent, false)
             WEB_URLS_ITEM -> inflater.inflate(R.layout.item_settings_recyclerview, parent, false)
             LOGIN_LOGOUT_ITEM -> inflater.inflate(R.layout.item_settings_login_logout, parent, false)
             SOCIAL_ITEM -> inflater.inflate(R.layout.item_settings_social, parent, false)
@@ -148,6 +155,30 @@ class SettingsAdapter(val context: Context,
             PROFILE_ITEM -> {
                 setProfileData(holder)
             }
+            NOTIFICATION_ITEM -> {
+                setNotificationItem(holder)
+            }
+        }
+    }
+
+    private fun setNotificationItem(holder: ViewHolder) {
+        holder.notificationSwitch.isChecked = SharedPreferenceManager.isNotificationsPaused()
+        holder.notificationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                SharedPreferenceManager.resumeNotifications()
+            } else {
+                SharedPreferenceManager.pauseNotifications()
+            }
+        }
+        val customSoundUrl = SharedPreferenceManager.getKnockTone()
+        if (CommonUtil.textIsNotEmpty(customSoundUrl)) {
+            val toneTitle = FileUtils.getFileName(context, Uri.parse(customSoundUrl))
+            holder.tvKnockToneTitle.text = toneTitle
+        } else {
+            holder.tvKnockToneTitle.text = "Set custom tone"
+        }
+        holder.tvKnockToneTitle?.setOnClickListener {
+            listener.onKnockToneClicked(holder.adapterPosition, it)
         }
     }
 
@@ -177,6 +208,7 @@ class SettingsAdapter(val context: Context,
 
     private fun setWebUrlsView(holder: ViewHolder) {
         val items = commonItemLists[holder.adapterPosition] as ArrayList<SettingItem>?
+        holder.titleTv.visibility = View.GONE
         if (items != null) {
             val adapter = SettingWebUrlAdapter(context = context, items = items) { url, position, view ->
                 listener.onWebUrlClicked(url, position, view)
@@ -188,9 +220,9 @@ class SettingsAdapter(val context: Context,
         }
     }
 
-    fun notifyProfileChange() {
+    fun notifyItemChange(itemId:Int) {
         for (i in commonItemLists.indices) {
-            if (commonItemLists[i] == PROFILE_ITEM) {
+            if (commonItemLists[i] == itemId) {
                 notifyItemChanged(i)
                 break
             }
@@ -250,5 +282,6 @@ class SettingsAdapter(val context: Context,
         fun onLogin(position: Int, view: View?)
         fun onSocial(type: Int, position: Int, view: View?)
         fun onProfileItem(type: Int, position: Int, view: View?)
+        fun onKnockToneClicked(position: Int, view: View?)
     }
 }

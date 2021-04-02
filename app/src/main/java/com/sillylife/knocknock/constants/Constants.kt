@@ -4,6 +4,7 @@ package com.sillylife.knocknock.constants
 object Constants {
 
     const val GALLERY: Int = 1000
+    const val AUDIO_LIBRARY: Int = 1001
     const val FIREBASE_REMOTE_CONFIG_CACHE_EXPIRATION: Long = 3600
 
     const val AWS_BUCKET_NAME = "zoopzam"

@@ -1,16 +1,12 @@
 package com.sillylife.knocknock.views.activity
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
-import com.firebase.ui.auth.IdpResponse
-import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.PermissionToken
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
@@ -18,7 +14,6 @@ import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.managers.FirebaseAuthUserManager
 import com.sillylife.knocknock.models.responses.UserResponse
-import com.sillylife.knocknock.services.ContactWatchService
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.DexterUtil
@@ -102,31 +97,9 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.GALLERY) {
+        if (requestCode == Constants.GALLERY || requestCode == Constants.AUDIO_LIBRARY) {
             RxBus.publish(RxEvent.ActivityResult(requestCode, resultCode, data))
             return
-        }
-        if (requestCode == RC_SIGN_IN) {
-            val response = IdpResponse.fromResultIntent(data)
-
-            if (resultCode == Activity.RESULT_OK) {
-                // Successfully signed in
-                Log.d("onActivityResult", "using FirebaseAuthUserManager ${FirebaseAuthUserManager.getFirebaseAuthToken()}")
-                FirebaseAuth.getInstance().currentUser?.getIdToken(true)
-                        ?.addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Log.d("onActivityResult", task.result!!.token!!)
-                                FirebaseAuthUserManager.registerFCMToken()
-                                viewModel?.getMe()
-                            }
-                        }
-                // ...
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
-            }
         }
     }
 
