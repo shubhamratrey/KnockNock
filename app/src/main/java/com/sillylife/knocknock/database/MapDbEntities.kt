@@ -39,6 +39,7 @@ object MapDbEntities {
         contact.name = contactsEntity.name
         contact.phone = contactsEntity.phone
         contact.image = contactsEntity.image
+        contact.userPtrId = contactsEntity.userPtrId
         contact.hasInvited = contactsEntity.hasInvited
         contact.availableOnPlatform = contactsEntity.availableOnPlatform
         if (contactsEntity.lastConnected == null) {

@@ -1,6 +1,5 @@
 package com.sillylife.knocknock.views.viewmodal
 
-import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.views.activity.BaseActivity
 import com.sillylife.knocknock.views.module.BaseModule
@@ -12,9 +11,6 @@ class MainActivityViewModel(activity: BaseActivity) : BaseViewModel(), MainActiv
         viewListener.onGetMeApiSuccess(response)
     }
 
-    override fun onRingBellApiSuccess(response: GenericResponse) {
-        viewListener.onRingBellApiSuccess(response)
-    }
 
     override fun onApiFailure(statusCode: Int, message: String) {
         viewListener.onApiFailure(statusCode, message)
@@ -29,10 +25,6 @@ class MainActivityViewModel(activity: BaseActivity) : BaseViewModel(), MainActiv
 
     fun getMe() {
         module.getMe()
-    }
-
-    fun ringBell(profileId: Int) {
-        module.ringBell(profileId)
     }
 
 }

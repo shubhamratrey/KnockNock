@@ -85,32 +85,22 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
         return commonItemLists.size
     }
 
-//    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
-//        if (!payloads.isNullOrEmpty()) {
-//            for (any in payloads) {
-//                if (any is String) {
-//                    when (any) {
-////                        UPDATE_ALL_CONTACT_DATA -> { // to enable infinite scrolling for CUs
-////                            val adapter = holder.rcvAll.adapter as ContactsAdapter
-////                            val homeDataItem = commonItemLists[holder.adapterPosition]
-////                            if (homeDataItem is HomeDataItem) {
-////                                adapter.addMoreContactsData(homeDataItem.contacts!!, homeDataItem.hasNext!!)
-////                            }
-////                        }
-//                    }
-//                } else if (any is Contact) {
-//                    if (holder.rcvAll.adapter is HomeContactsAdapter) {
-//                        val adapter = holder.rcvAll.adapter as HomeContactsAdapter
-//                        if (adapter.layoutManager == Constants.ContactLayoutType.HORIZONTAL_LAYOUT) {
-//                            adapter.updateRecentlyConnected(any)
-//                        }
-//                    }
-//                }
-//            }
-//        } else {
-//            super.onBindViewHolder(holder, position, payloads)
-//        }
-//    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (!payloads.isNullOrEmpty()) {
+            for (any in payloads) {
+                if (any is Contact) {
+                    if (holder.rcvAll.adapter is HomeContactsAdapter) {
+                        val adapter = holder.rcvAll.adapter as HomeContactsAdapter
+                        if (holder.itemViewType == RECENTLY_CONNECTED_CONTACTS_VIEW) {
+                            adapter.updateRecentlyConnected(any)
+                        }
+                    }
+                }
+            }
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (holder.itemViewType) {
@@ -147,13 +137,11 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
             adapter.setHasStableIds(true)
             if (homeDataItem.type == HomeType.AVAILABLE_CONTACTS) {
                 if (holder.rcvAll.adapter == null) {
-//                holder.rcvAll?.addItemDecoration(GridItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20)))
                     holder.rcvAll?.addItemDecoration(GridSpacingItemDecoration(4, context.resources.getDimensionPixelSize(R.dimen.dp_20), false))
                 }
                 holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 4)
             } else {
                 if (holder.rcvAll.adapter == null) {
-//                holder.rcvAll?.addItemDecoration(GridItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20), context.resources.getDimensionPixelSize(R.dimen.dp_20)))
                     holder.rcvAll?.addItemDecoration(GridSpacingItemDecoration(3, context.resources.getDimensionPixelSize(R.dimen.dp_20), false))
                 }
                 holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 3)
@@ -237,23 +225,6 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
 //    }
 
     class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
-
-
-    class GridItemDecoration(val leftMargin: Int, val topMargin: Int, val rightMargin: Int, val bottomMargin: Int) : RecyclerView.ItemDecoration() {
-        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            super.getItemOffsets(outRect, view, parent, state)
-            if (parent.getChildAdapterPosition(view) == 0 || parent.getChildAdapterPosition(view) == 1) {
-                outRect.top = topMargin
-                outRect.bottom = bottomMargin
-            }
-
-            if (parent.getChildAdapterPosition(view) % 2 == 0) {
-                outRect.right = rightMargin
-            } else {
-                outRect.left = leftMargin
-            }
-        }
-    }
 
     class GridSpacingItemDecoration(private val spanCount: Int, private val spacing: Int, private val includeEdge: Boolean) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

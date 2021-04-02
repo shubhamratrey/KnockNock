@@ -122,24 +122,23 @@ class HomeContactsAdapter(val context: Context,
         holder.ivContactImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
                 ?: throw IllegalArgumentException("Cannot load drawable"))
     }
-//
-//    fun updateRecentlyConnected(contact: Contact) {
-//        var lastIndex = 0
-//        for (i in commonItemList.indices) {
-//            val a = commonItemList[i]
-//            if (a is Contact && a.phone.equals(contact.phone)) {
-//                lastIndex = i
-//                break
-//            }
-//        }
-//        if (lastIndex != 0) {
-//            notifyItemMoved(lastIndex, 0)
-//        } else {
-//            items.add(0, contact)
-//            commonItemList.add(0, contact)
-//            notifyItemInserted(0)
-//        }
-//    }
+
+    fun updateRecentlyConnected(contact: Contact) {
+        var lastIndex = 0
+        for (i in commonItemList.indices) {
+            val a = commonItemList[i]
+            if (a is Contact && a.phone.equals(contact.phone)) {
+                lastIndex = i
+                break
+            }
+        }
+        if (lastIndex != 0) {
+            notifyItemMoved(lastIndex, 0)
+        } else {
+            commonItemList.add(0, contact)
+            notifyItemInserted(0)
+        }
+    }
 //
 //    fun addMoreContactsData(items: ArrayList<Contact>, hasNext: Boolean) {
 //        oldCount = itemCount

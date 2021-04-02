@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/linen"
+    android:orientation="vertical"
+    tools:context=".views.activity.MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:elevation="0dp"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:layout_scrollFlags="snap"
+            app:titleEnabled="false">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:gravity="center"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:navigationIcon="@drawable/ic_left_arrow">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="56dp"
+                    android:fontFamily="@font/notosans_medium"
+                    android:gravity="center"
+                    android:text="Profile"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    android:visibility="invisible" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="80dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/teamMessage_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/_30sdp"
+                android:layout_marginEnd="@dimen/_30sdp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:layout_marginBottom="@dimen/_15sdp"
+                        android:fontFamily="@font/notosans_bold"
+                        android:gravity="start"
+                        android:text="🎉 Welcome!"
+                        android:textColor="@color/swamp"
+                        android:textSize="@dimen/_18ssp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/teamMessageTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/_4sdp"
+                        android:fontFamily="@font/notosans_regular"
+                        android:gravity="start"
+                        android:lineHeight="@dimen/_30sdp"
+                        android:overScrollMode="never"
+                        android:paddingTop="@dimen/_15sdp"
+                        android:scrollbarAlwaysDrawVerticalTrack="true"
+                        android:scrollbars="vertical"
+                        android:text="Microsoft provides programming examples for illustration only, without warranty either expressed or implied.\n\nThis includes, but is not limited to, the implied warranties of merchantability or fitness for a particular purpose. This article assumes that you are familiar with the programming language that is being demonstrated and with the tools that are used to create and to debug procedures. \n\n🏠 Shubh, Seemant &amp; the sillylife team"
+                        android:textAlignment="textStart"
+                        android:textColor="@color/swamp"
+                        android:textSize="@dimen/_14ssp"
+                        android:textStyle="normal"
+                        app:lineHeight="@dimen/_30sdp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/_20sdp"
+                    android:paddingBottom="@dimen/_20sdp">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/getUsernameBtn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_capsule_r30"
+                        android:fontFamily="@font/notosans_medium"
+                        android:gravity="center"
+                        android:paddingStart="@dimen/_25sdp"
+                        android:paddingTop="@dimen/_2sdp"
+                        android:paddingEnd="@dimen/_25sdp"
+                        android:paddingBottom="@dimen/_2sdp"
+                        android:text="Get your username ➜"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14ssp" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/alreadySignInTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:fontFamily="@font/notosans_regular"
+                        android:gravity="center"
+                        android:textColor="@color/chambray"
+                        android:textSize="@dimen/_12ssp"
+                        android:textStyle="normal"
+                        tools:text="Already have account? Sign in" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/phonenumber_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="?actionBarSize"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="@string/enter_phone_number"
+                    android:textColor="@color/swamp"
+                    android:textSize="@dimen/_16ssp"
+                    tools:text="@string/enter_phone_number" />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="26dp"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:layout_marginEnd="26dp"
+                    android:layout_marginBottom="@dimen/_40sdp"
+                    android:background="@drawable/ic_capsule_r10_white"
+                    android:digits="1234567890"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:hint="Phone Number"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:maxLength="14"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textAllCaps="false"
+                    android:textColorHint="@color/river_bed_20"
+                    android:textSize="@dimen/_16ssp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tcPrivacyTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginEnd="36dp"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="@string/t_c_and_privacy_policy"
+                    android:textColor="@color/river_bed"
+                    android:textSize="@dimen/_10ssp"
+                    tools:text="@string/t_c_and_privacy_policy" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/otp_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="?actionBarSize"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="@string/enter_the_code_we_just_texted_you"
+                    android:textColor="@color/swamp"
+                    android:textSize="@dimen/_16ssp" />
+
+                <com.sillylife.knocknock.views.components.UIComponentOtp
+                    android:id="@+id/otpView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:enabled="true"
+                    android:focusable="true"
+                    android:fontFamily="@font/notosans_regular"
+                    android:inputType="number"
+                    android:itemBackground="@color/white"
+                    android:textColor="@color/swamp"
+                    android:textSize="@dimen/_15ssp"
+                    app:itemHeight="@dimen/_47sdp"
+                    app:itemRadius="10dp"
+                    app:itemWidth="@dimen/_40sdp"
+                    app:lineColor="@color/white"
+                    app:viewType="rectangle" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/resendTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginEnd="36dp"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="Didn't receive it? Tap to resend."
+                    android:textColor="@color/river_bed"
+                    android:textSize="@dimen/_12ssp" />
+            </LinearLayout>
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/button_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:visibility="visible">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/_20sdp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_capsule_r30"
+                    android:fontFamily="@font/notosans_medium"
+                    android:paddingStart="@dimen/_30sdp"
+                    android:paddingTop="@dimen/_4sdp"
+                    android:paddingEnd="@dimen/_30sdp"
+                    android:paddingBottom="@dimen/_4sdp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_14ssp" />
+
+            </FrameLayout>
+
+            <ProgressBar
+                android:id="@+id/proceedProgress"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/_28sdp"
+                android:progressTint="@color/white"
+                android:theme="@style/ProgressWhiteTheme"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -118,10 +118,14 @@ class SettingsAdapter(val context: Context,
             LOGIN_LOGOUT_ITEM -> {
                 if (FirebaseAuthUserManager.isUserLoggedIn()) {
                     holder.tvloginLogout.text = context.getString(R.string.logout)
-                    listener.onLogout(holder.adapterPosition, holder.containerView)
+                    holder.tvloginLogout.setOnClickListener {
+                        listener.onLogout(holder.adapterPosition, holder.containerView)
+                    }
                 } else {
                     holder.tvloginLogout.text = context.getString(R.string.login)
-                    listener.onLogin(holder.adapterPosition, holder.containerView)
+                    holder.tvloginLogout.setOnClickListener {
+                        listener.onLogin(holder.adapterPosition, holder.containerView)
+                    }
                 }
             }
             VERSION_CODE_ITEM -> {

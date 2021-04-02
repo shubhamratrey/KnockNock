@@ -9,7 +9,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
-import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.auth.FirebaseAuth
 import com.karumi.dexter.PermissionToken
@@ -18,13 +17,13 @@ import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.managers.FirebaseAuthUserManager
-import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.services.ContactWatchService
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.DexterUtil
 import com.sillylife.knocknock.views.fragments.HomeFragment
+import com.sillylife.knocknock.views.fragments.LoginFragment
 import com.sillylife.knocknock.views.fragments.ProfileFragment
 import com.sillylife.knocknock.views.module.MainActivityModule
 import com.sillylife.knocknock.views.viewmodal.MainActivityViewModel
@@ -44,14 +43,10 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         }
     }
 
-    override fun onRingBellApiSuccess(response: GenericResponse) {
-        if (!isFinishing && response != null) {
-            Toast.makeText(this, "Bell Ringed", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onApiFailure(statusCode: Int, message: String) {
-
+        if (statusCode == 404 && message == "User Not Found.") {
+            replaceFragment(ProfileFragment.newInstance(), ProfileFragment.TAG)
+        }
     }
 
     val RC_SIGN_IN = 12132
@@ -63,15 +58,7 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         setContentView(R.layout.activity_main)
         viewModel = ViewModelProvider(this, ActivityViewModelFactory(this)).get(MainActivityViewModel::class.java)
         if (!FirebaseAuthUserManager.isUserLoggedIn()) {
-            val providers = arrayListOf(
-                    AuthUI.IdpConfig.PhoneBuilder().build(),
-                    AuthUI.IdpConfig.GoogleBuilder().build()
-            )
-            startActivityForResult(
-                    AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
-                            providers
-                    ).setIsSmartLockEnabled(false).build(), RC_SIGN_IN
-            )
+            replaceFragment(LoginFragment.newInstance(), LoginFragment.TAG)
         } else {
             val profile = SharedPreferenceManager.getUser()
             if (profile != null) {
@@ -85,10 +72,6 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
                 viewModel?.getMe()
             }
         }
-//        ringBell?.setOnClickListener {
-//            viewModel?.ringBell(1)
-//        }
-
     }
 
     private fun openHomeFragment() {
@@ -99,8 +82,8 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
                 try {
                     if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) { //Checking permission
                         //Starting service for registering ContactObserver
-                        val intent = Intent(this@MainActivity, ContactWatchService::class.java)
-                        startService(intent)
+//                        val intent = Intent(this@MainActivity, ContactWatchService::class.java)
+//                        startService(intent)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -157,9 +140,14 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
     }
 
     override fun onBackPressed() {
-        val frag = supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)
-        if (frag != null) {
-            if ((frag as ProfileFragment).onBackPressed()) {
+        val profileFragment = supportFragmentManager.findFragmentByTag(ProfileFragment.TAG)
+        val loginFragment = supportFragmentManager.findFragmentByTag(LoginFragment.TAG)
+        if (profileFragment != null) {
+            if ((profileFragment as ProfileFragment).onBackPressed()) {
+                super.onBackPressed()
+            }
+        } else if (loginFragment != null) {
+            if ((loginFragment as LoginFragment).onBackPressed()) {
                 super.onBackPressed()
             }
         } else {

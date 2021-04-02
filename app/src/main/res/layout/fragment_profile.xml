@@ -50,186 +50,201 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?actionBarSize"
+        android:orientation="vertical"
         android:paddingTop="80dp">
 
-        <LinearLayout
-            android:id="@+id/name_layout"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvFullnameHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_4sdp"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center"
-                android:textColor="@color/swamp"
-                android:textSize="@dimen/_16ssp"
-                tools:text="Enter your fullname" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
             <LinearLayout
+                android:id="@+id/name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/_40sdp"
-                android:layout_marginEnd="16dp">
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvFullnameHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_4sdp"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:textColor="@color/swamp"
+                    android:textSize="@dimen/_16ssp"
+                    tools:text="Enter your fullname" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:layout_marginEnd="16dp">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/etFirstname"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/ic_capsule_r10_white"
+                        android:fontFamily="@font/notosans_regular"
+                        android:gravity="center"
+                        android:hint="@string/first"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/river_bed_20"
+                        android:textSize="@dimen/_16ssp" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/etLastname"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/ic_capsule_r10_white"
+                        android:backgroundTint="@color/white"
+                        android:fontFamily="@font/notosans_regular"
+                        android:gravity="center"
+                        android:hint="@string/last"
+                        android:imeOptions="actionDone"
+                        android:inputType="textPersonName"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textColorHint="@color/river_bed_20"
+                        android:textSize="@dimen/_16ssp" />
+
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:text="@string/fullname_footer"
+                    android:textColor="@color/river_bed"
+                    android:textSize="@dimen/_10ssp"
+                    tools:text="@string/fullname_footer" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/username_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvUsernameHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:textColor="@color/swamp"
+                    android:textSize="@dimen/_16ssp"
+                    tools:text="@string/change_username" />
 
                 <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/etFirstname"
-                    android:layout_width="0dp"
+                    android:id="@+id/etUsername"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_marginStart="26dp"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    android:layout_marginEnd="26dp"
                     android:background="@drawable/ic_capsule_r10_white"
+                    android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+                    android:fontFamily="@font/notosans_regular"
                     android:gravity="center"
-                    android:hint="@string/first"
-                    android:imeOptions="actionNext"
-                    android:inputType="textPersonName"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textColorHint="@color/river_bed_20"
-                    android:textSize="@dimen/_16ssp" />
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/etLastname"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/ic_capsule_r10_white"
-                    android:backgroundTint="@color/white"
-                    android:gravity="center"
-                    android:hint="@string/last"
+                    android:hint="@string/username"
                     android:imeOptions="actionDone"
                     android:inputType="textPersonName"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
+                    android:textAllCaps="false"
                     android:textColorHint="@color/river_bed_20"
                     android:textSize="@dimen/_16ssp" />
 
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <LinearLayout
+                android:id="@+id/photo_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_14sdp"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center"
-                android:text="@string/fullname_footer"
-                android:textColor="@color/river_bed"
-                android:textSize="@dimen/_10ssp"
-                tools:text="@string/fullname_footer" />
+                android:orientation="vertical"
+                android:visibility="gone">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvPhotoHeader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosans_regular"
+                    android:gravity="center"
+                    android:textColor="@color/swamp"
+                    android:textSize="@dimen/_16ssp"
+                    tools:text="@string/change_photo" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/username_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvUsernameHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center"
-                android:textColor="@color/swamp"
-                android:textSize="@dimen/_16ssp"
-                tools:text="@string/change_username" />
-
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/etUsername"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="26dp"
-                android:layout_marginTop="@dimen/_40sdp"
-                android:layout_marginEnd="26dp"
-                android:background="@drawable/ic_capsule_r10_white"
-                android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
-                android:gravity="center"
-                android:hint="@string/username"
-                android:imeOptions="actionDone"
-                android:inputType="textPersonName"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textAllCaps="false"
-                android:textColorHint="@color/river_bed_20"
-                android:textSize="@dimen/_16ssp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/photo_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvPhotoHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/notosans_regular"
-                android:gravity="center"
-                android:textColor="@color/swamp"
-                android:textSize="@dimen/_16ssp"
-                tools:text="@string/change_photo" />
-
-            <include
-                android:id="@+id/userImageIv1"
-                layout="@layout/layout_contact"
-                android:layout_width="@dimen/_120sdp"
-                android:layout_height="@dimen/_120sdp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/_50sdp" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/_20sdp">
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_capsule_r30"
-                android:fontFamily="@font/notosans_medium"
-                android:paddingStart="@dimen/_30sdp"
-                android:paddingTop="@dimen/_4sdp"
-                android:paddingEnd="@dimen/_30sdp"
-                android:paddingBottom="@dimen/_4sdp"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_14ssp" />
+                <include
+                    android:id="@+id/userImageIv1"
+                    layout="@layout/layout_contact"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_120sdp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_50sdp" />
+            </LinearLayout>
 
         </FrameLayout>
 
-        <ProgressBar
-            android:id="@+id/proceedProgress"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:visibility="gone"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/_28sdp"
-            android:progressTint="@color/white"
-            android:theme="@style/ProgressWhiteTheme" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    </FrameLayout>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/_20sdp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_capsule_r30"
+                    android:fontFamily="@font/notosans_medium"
+                    android:paddingStart="@dimen/_30sdp"
+                    android:paddingTop="@dimen/_4sdp"
+                    android:paddingEnd="@dimen/_30sdp"
+                    android:paddingBottom="@dimen/_4sdp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_14ssp" />
+
+            </FrameLayout>
+
+            <ProgressBar
+                android:id="@+id/proceedProgress"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="@dimen/_28sdp"
+                android:progressTint="@color/white"
+                android:theme="@style/ProgressWhiteTheme"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

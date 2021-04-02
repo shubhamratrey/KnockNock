@@ -43,5 +43,10 @@
     <string name="next">Next</string>
     <string name="done">Done</string>
     <string name="username">\@username</string>
+    <string name="enter_phone_number">Enter your phone #</string>
+    <string name="t_c_and_privacy_policy"><![CDATA[By entering your number, you\'re agreeing to our <font color=\'#FC5237\'><a style="text-decoration:none" href="https://zoopzam.com/terms-condition">Terms of Service</a></font> and <font color=\'#FC5237\'><a style="text-decoration:none" href="https://zoopzam.com/privacy-policy">Privacy Policy</a></font>. Thanks!]]></string>
+    <string name="enter_the_code_we_just_texted_you">Enter the code we\njust texted you</string>
+    <string name="get_otp">Get OTP</string>
+    <string name="submit_otp">Submit OTP</string>
 
 </resources>

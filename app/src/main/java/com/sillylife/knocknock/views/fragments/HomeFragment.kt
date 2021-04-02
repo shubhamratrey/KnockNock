@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
@@ -20,6 +21,7 @@ import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
+import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.HomeDataResponse
 import com.sillylife.knocknock.models.responses.SyncedContactsResponse
 import com.sillylife.knocknock.services.AppDisposable
@@ -100,8 +102,8 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
         viewModel?.getPhoneContacts(temp)
 
 
-//        val contact = ContactsHelper.getAvailableContactList()
-        items.add(HomeDataItem(type = AVAILABLE_CONTACTS, title = "Phone Contacts", contacts = contact, false))
+        val availableContacts = ContactsHelper.getAvailableContactList()
+        items.add(HomeDataItem(type = AVAILABLE_CONTACTS, title = "Phone Contacts", contacts = availableContacts, false))
         setHomeAdapter(HomeDataResponse(items = items, hasMore = false))
 
         cvContactImage?.setOnClickListener {
@@ -143,6 +145,9 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
                         adapter?.addRecentlyListenedRow(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = contactList, false))
                     } else {
                         adapter?.updateRecentlyConnected(it)
+                    }
+                    if (it.userPtrId != null) {
+                        viewModel?.ringBell(it.userPtrId!!)
                     }
                 }
             }
@@ -201,5 +206,11 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
 
     override fun onApiFailure(statusCode: Int, message: String) {
 
+    }
+
+    override fun onRingBellApiSuccess(response: GenericResponse) {
+        if (isVisible && response != null) {
+            showToast("Bell Ringed", Toast.LENGTH_SHORT)
+        }
     }
 }

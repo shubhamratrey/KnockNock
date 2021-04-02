@@ -1,5 +1,6 @@
 package com.sillylife.knocknock.views.fragments
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
@@ -14,9 +15,13 @@ import com.sillylife.knocknock.constants.BundleConstants
 import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.constants.PackageNameConstants
 import com.sillylife.knocknock.constants.RxEventType
+import com.sillylife.knocknock.database.KnockNockDatabase
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
+import com.sillylife.knocknock.managers.AuthManager
 import com.sillylife.knocknock.services.AppDisposable
+import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
+import com.sillylife.knocknock.services.sharedpreference.SharedPreferences
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.views.activity.WebViewActivity
 import com.sillylife.knocknock.views.adapter.SettingsAdapter
@@ -61,7 +66,16 @@ class SettingsFragment : BaseFragment() {
             }
 
             override fun onLogout(position: Int, view: View?) {
-
+                if (isVisible && isAdded) {
+                    AuthManager.logoutUser(requireActivity(), object : AuthManager.IAuthCredentialLogoutCallback {
+                        override fun onUserSignedOutSuccessfully() {
+                            val db: KnockNockDatabase? = KnockNockDatabase.getInstance(requireActivity())
+                            db?.clearAllTables()
+                            SharedPreferences.clearPrefs()
+                            (requireActivity() as Activity).recreate()
+                        }
+                    })
+                }
             }
 
             override fun onLogin(position: Int, view: View?) {

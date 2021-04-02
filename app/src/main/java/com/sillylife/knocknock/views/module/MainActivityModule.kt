@@ -34,29 +34,8 @@ class MainActivityModule(val iModuleListener: IModuleListener) : BaseModule() {
                 }))
     }
 
-    fun ringBell(profileId: Int) {
-        appDisposable.add(apiService
-                .ringBell(profileId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : CallbackWrapper<Response<GenericResponse>>() {
-                    override fun onSuccess(t: Response<GenericResponse>) {
-                        if (t.isSuccessful) {
-                            iModuleListener.onRingBellApiSuccess(t.body()!!)
-                        } else {
-                            iModuleListener.onApiFailure(t.code(), "empty body")
-                        }
-                    }
-
-                    override fun onFailure(code: Int, message: String) {
-                        iModuleListener.onApiFailure(code, message)
-                    }
-                }))
-    }
-
     interface IModuleListener : IBaseView {
         fun onGetMeApiSuccess(response: UserResponse)
-        fun onRingBellApiSuccess(response: GenericResponse)
         fun onApiFailure(statusCode: Int, message: String)
     }
 

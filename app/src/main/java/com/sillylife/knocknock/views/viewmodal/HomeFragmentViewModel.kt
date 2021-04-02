@@ -36,6 +36,11 @@ class HomeFragmentViewModel(fragment: BaseFragment) : BaseViewModel(), HomeFragm
 //        listener.onContactPhoneSyncSuccess(contacts)
 //    }
 
+
+    override fun onRingBellApiSuccess(response: GenericResponse) {
+        listener.onRingBellApiSuccess(response)
+    }
+
     override fun setViewModel(): BaseModule {
         return module
     }
@@ -51,5 +56,9 @@ class HomeFragmentViewModel(fragment: BaseFragment) : BaseViewModel(), HomeFragm
 
     fun getPhoneContacts(phoneNumbers: ArrayList<String>) {
         module.getPhoneContacts(phoneNumbers)
+    }
+
+    fun ringBell(profileId: Int) {
+        module.ringBell(profileId)
     }
 }
