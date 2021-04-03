@@ -28,6 +28,7 @@ import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.DexterUtil
 import com.sillylife.knocknock.utils.FileUtils
 import com.sillylife.knocknock.utils.ImageManager
+import com.sillylife.knocknock.views.activity.MainActivity
 import com.sillylife.knocknock.views.adapter.SettingsAdapter
 import com.sillylife.knocknock.views.module.ProfileModule
 import com.sillylife.knocknock.views.viewmodal.ProfileViewModel
@@ -178,6 +179,9 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
                 username_layout.visibility = View.VISIBLE
             }
             else -> {
+                if (requireActivity() is MainActivity) {
+                    (requireActivity() as MainActivity).syncContacts()
+                }
                 replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
             }
         }

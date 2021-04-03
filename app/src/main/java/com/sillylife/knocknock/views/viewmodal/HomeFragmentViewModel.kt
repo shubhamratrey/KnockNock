@@ -12,9 +12,9 @@ class HomeFragmentViewModel(fragment: BaseFragment) : BaseViewModel(), HomeFragm
 
     val module = HomeFragmentModule(this)
     val listener = fragment as HomeFragmentModule.APIModuleListener
-    override fun onContactPhoneSyncSuccess(response: SyncedContactsResponse) {
-        listener.onContactPhoneSyncSuccess(response)
-    }
+//    override fun onContactPhoneSyncSuccess(response: SyncedContactsResponse) {
+//        listener.onContactPhoneSyncSuccess(response)
+//    }
 
     override fun onApiFailure(statusCode: Int, message: String) {
         listener.onApiFailure(statusCode, message)
@@ -54,9 +54,9 @@ class HomeFragmentViewModel(fragment: BaseFragment) : BaseViewModel(), HomeFragm
 //        module.getRealTimeUpdates(executiveId)
 //    }
 
-    fun getPhoneContacts(phoneNumbers: ArrayList<String>) {
-        module.getPhoneContacts(phoneNumbers)
-    }
+//    fun getPhoneContacts(phoneNumbers: ArrayList<String>) {
+//        module.getPhoneContacts(phoneNumbers)
+//    }
 
     fun ringBell(profileId: Int) {
         module.ringBell(profileId)

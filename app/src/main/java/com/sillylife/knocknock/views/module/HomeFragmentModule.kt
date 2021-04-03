@@ -46,24 +46,24 @@ class HomeFragmentModule(val listener: APIModuleListener) : BaseModule() {
 //        firebaseDatabase.child("delivery_order_request/executive_id/${executiveId}").addValueEventListener(messagesListener!!)
 //    }
 
-    fun getPhoneContacts(phoneNumbers: ArrayList<String>) {
-        appDisposable.add(apiService
-                .syncContacts(phoneNumbers)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribeWith(object : CallbackWrapper<Response<SyncedContactsResponse>>() {
-                    override fun onSuccess(t: Response<SyncedContactsResponse>) {
-                        if (t.isSuccessful) {
-                            listener.onContactPhoneSyncSuccess(t.body()!!)
-                        } else {
-                            listener.onApiFailure(t.code(), "empty body")
-                        }
-                    }
-
-                    override fun onFailure(code: Int, message: String) {
-                        listener.onApiFailure(code, message)
-                    }
-                }))
-    }
+//    fun getPhoneContacts(phoneNumbers: ArrayList<String>) {
+//        appDisposable.add(apiService
+//                .syncContacts(phoneNumbers)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread()).subscribeWith(object : CallbackWrapper<Response<SyncedContactsResponse>>() {
+//                    override fun onSuccess(t: Response<SyncedContactsResponse>) {
+//                        if (t.isSuccessful) {
+//                            listener.onContactPhoneSyncSuccess(t.body()!!)
+//                        } else {
+//                            listener.onApiFailure(t.code(), "empty body")
+//                        }
+//                    }
+//
+//                    override fun onFailure(code: Int, message: String) {
+//                        listener.onApiFailure(code, message)
+//                    }
+//                }))
+//    }
 
     fun ringBell(profileId: Int) {
         appDisposable.add(apiService
@@ -87,7 +87,7 @@ class HomeFragmentModule(val listener: APIModuleListener) : BaseModule() {
 
     interface APIModuleListener {
         //        fun onHomeApiSuccess(response: HomeDataResponse?)
-        fun onContactPhoneSyncSuccess(response: SyncedContactsResponse)
+//        fun onContactPhoneSyncSuccess(response: SyncedContactsResponse)
         fun onApiFailure(statusCode: Int, message: String)
         fun onRingBellApiSuccess(response: GenericResponse)
 //        fun onRealTimeOrderUpdates(status: String, requestId: Int)

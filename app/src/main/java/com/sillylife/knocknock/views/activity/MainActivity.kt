@@ -9,13 +9,19 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import com.karumi.dexter.PermissionToken
+import com.sillylife.knocknock.MainApplication
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
+import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.managers.FirebaseAuthUserManager
+import com.sillylife.knocknock.models.Contact
+import com.sillylife.knocknock.models.responses.SyncedContactsResponse
 import com.sillylife.knocknock.models.responses.UserResponse
+import com.sillylife.knocknock.services.CallbackWrapper
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
+import com.sillylife.knocknock.utils.AsyncTaskAlternative.executeAsyncTask
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.DexterUtil
 import com.sillylife.knocknock.views.fragments.HomeFragment
@@ -24,6 +30,11 @@ import com.sillylife.knocknock.views.fragments.ProfileFragment
 import com.sillylife.knocknock.views.module.MainActivityModule
 import com.sillylife.knocknock.views.viewmodal.MainActivityViewModel
 import com.sillylife.knocknock.views.viewmodelfactory.ActivityViewModelFactory
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import retrofit2.Response
 
 
 class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
@@ -80,25 +91,31 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
     }
 
     private fun openHomeFragment() {
-        DexterUtil.with(this, Manifest.permission.READ_CONTACTS).setListener(object :
-                DexterUtil.DexterUtilListener {
-            override fun permissionGranted() {
-                replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
-                try {
-                    if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) { //Checking permission
-                        //Starting service for registering ContactObserver
-//                        val intent = Intent(this@MainActivity, ContactWatchService::class.java)
-//                        startService(intent)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        //Checking permission
+        if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+            syncContacts()
+//            Starting service for registering ContactObserver
+//            try {
+//                val intent = Intent(this@MainActivity, ContactWatchService::class.java)
+//                startService(intent)
+//            } catch (e: Exception) {
+//                e.printStackTrace()
+//            }
+
+        } else {
+            DexterUtil.with(this, Manifest.permission.READ_CONTACTS).setListener(object :
+                    DexterUtil.DexterUtilListener {
+                override fun permissionGranted() {
+                    replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
+                    syncContacts()
                 }
-            }
 
-            override fun permissionDenied(token: PermissionToken?) {
+                override fun permissionDenied(token: PermissionToken?) {
 
-            }
-        }).check()
+                }
+            }).check()
+        }
     }
 
     private fun openProfileFragment() {
@@ -111,6 +128,81 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
             RxBus.publish(RxEvent.ActivityResult(requestCode, resultCode, data))
             return
         }
+    }
+
+    fun syncContacts() {
+        Log.d(TAG, "SyncContacts - Started")
+        CoroutineScope(Dispatchers.IO).executeAsyncTask(onPreExecute = {
+            Log.d(TAG, "SyncContacts - onPreExecute")
+        }, doInBackground = { publishProgress: suspend (progress: Int) -> Unit ->
+            Log.d(TAG, "SyncContacts - doInBackground - $publishProgress")
+            publishProgress(10) // call `publishProgress` to update progress, `onProgressUpdate` will be called
+
+            ContactsHelper.updatePhoneContactsToDB()
+            val dbContacts = ContactsHelper.getDBPhoneContactList()
+
+            val phoneNumberList: ArrayList<String> = arrayListOf()
+            dbContacts.forEach {
+                phoneNumberList.add(it.phone!!)
+            }
+            publishProgress(50)
+            viewModel?.getAppDisposable()?.add(
+                    MainApplication.getInstance().getAPIService().syncContacts(phoneNumberList)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(object : CallbackWrapper<Response<SyncedContactsResponse>>() {
+                                override fun onSuccess(t: Response<SyncedContactsResponse>) {
+                                    if (t.isSuccessful && t.body() != null) {
+                                        val response = t.body()!!
+                                        if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                                            return
+                                        }
+                                        val availableContacts = response.contacts!!
+                                        for (availableContact in availableContacts) {
+                                            var toUpdate = false
+                                            var tempContact = Contact()
+                                            for (dbContact in dbContacts) {
+                                                if (availableContact.phone == dbContact.phone) {
+                                                    toUpdate = true
+                                                    tempContact = dbContact.copy()
+                                                    break
+                                                }
+                                            }
+                                            if (toUpdate) {
+                                                if (CommonUtil.textIsNotEmpty(availableContact.image)) {
+                                                    tempContact.image = availableContact.image
+                                                }
+                                                if (CommonUtil.textIsNotEmpty(availableContact.username)) {
+                                                    tempContact.username = availableContact.username
+                                                }
+                                                if (availableContact.userPtrId != null) {
+                                                    tempContact.userPtrId = availableContact.userPtrId
+                                                }
+                                                if (availableContact.availableOnPlatform != null) {
+                                                    tempContact.availableOnPlatform = availableContact.availableOnPlatform
+                                                }
+                                                ContactsHelper.updateSomeData(availableOnPlatform = tempContact.availableOnPlatform!!, image = tempContact.image!!, userPtrId = tempContact.userPtrId!!, phone = tempContact.phone!!, username = tempContact.username!!)
+                                            }
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(code: Int, message: String) {
+
+                                }
+                            }))
+            publishProgress(100)
+            "Result" // send data to "onPostExecute"
+        }, onPostExecute = { it ->
+            // runs in Main Thread
+            // ... here "it" is a data returned from "doInBackground"
+            Log.d(TAG, "SyncContacts - onPostExecute - $it")
+        }, onProgressUpdate = {
+            // runs in Main Thread
+            // ... here "it" contains progress
+            Log.d(TAG, "SyncContacts - onProgressUpdate - $it")
+        })
+        Log.d(TAG, "SyncContacts - Ended")
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -136,6 +228,5 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         } else {
             super.onBackPressed()
         }
-
     }
 }
