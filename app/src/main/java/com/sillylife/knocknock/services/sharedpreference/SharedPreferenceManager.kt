@@ -19,6 +19,7 @@ object SharedPreferenceManager {
     private const val PAUSE_NOTIFICATIONS = "pause_notifications"
     private const val KNOCK_TONE = "knock_tone"
     private const val ADVERTISING_ID = "advertising_id"
+    private const val CONTACT_SYNC_WITH_NETWORK = "contact_sync_with_network"
 
 
     fun storeFirebaseAuthToken(firebaseAuthToken: String) {
@@ -85,5 +86,17 @@ object SharedPreferenceManager {
 
     fun getAdvertisingId(): String {
         return sharedPreferences.getString(ADVERTISING_ID, "") ?: ""
+    }
+
+    fun isContactSyncingWithNetwork(): Boolean {
+        return sharedPreferences.getBoolean(CONTACT_SYNC_WITH_NETWORK, true)
+    }
+
+    fun enableContactSyncWithNetwork() {
+        sharedPreferences.setBoolean(CONTACT_SYNC_WITH_NETWORK, true)
+    }
+
+    fun disableContactSyncWithNetwork() {
+        sharedPreferences.setBoolean(CONTACT_SYNC_WITH_NETWORK, false)
     }
 }

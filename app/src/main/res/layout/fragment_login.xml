@@ -187,6 +187,7 @@
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
                     android:textAllCaps="false"
+                    android:textColor="@color/swamp"
                     android:textColorHint="@color/river_bed_20"
                     android:textSize="@dimen/_16ssp" />
 

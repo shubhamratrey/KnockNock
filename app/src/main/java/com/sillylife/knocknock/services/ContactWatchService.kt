@@ -23,9 +23,8 @@ class ContactWatchService : Service() {
 
     private fun startContactObserver() {
         try {
-            Toast.makeText(applicationContext, "ContactWatchService Started", Toast.LENGTH_SHORT).show()
             //Registering contact observer
-            application.contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, ContactsObserver(Handler(), applicationContext))
+            application.contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, ContactsObserver(Handler(Looper.getMainLooper()), applicationContext))
         } catch (e: Exception) {
             e.printStackTrace()
         }

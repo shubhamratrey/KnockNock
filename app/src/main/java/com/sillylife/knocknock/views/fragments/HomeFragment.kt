@@ -54,17 +54,13 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
         viewModel = ViewModelProvider(this, FragmentViewModelFactory(this@HomeFragment))
                 .get(HomeFragmentViewModel::class.java)
 
-        val items: ArrayList<HomeDataItem> = arrayListOf()
-
-        val recentlyConnectedContactList = ContactsHelper.getDBRecentlyConnectedContactList()
-        if (recentlyConnectedContactList.isNotEmpty() && recentlyConnectedContactList.size >= 1) {
-            recentlyListenedRowExists = true
-            items.add(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = recentlyConnectedContactList, false))
+        if (SharedPreferenceManager.isContactSyncingWithNetwork()) {
+            toggleContactSyncLayout(true)
+        } else {
+            setHomeAdapter()
+            toggleContactSyncLayout(false)
         }
 
-        val availableContacts = ContactsHelper.getAvailableContactList()
-        items.add(HomeDataItem(type = AVAILABLE_CONTACTS, title = "Phone Contacts", contacts = availableContacts, false))
-        setHomeAdapter(HomeDataResponse(items = items, hasMore = false))
 
         cvContactImage?.setOnClickListener {
             addFragment(SettingsFragment.newInstance(), SettingsFragment.TAG)
@@ -73,28 +69,55 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
             addFragment(InviteFragment.newInstance(), InviteFragment.TAG)
         }
         setPhoto()
-        appDisposable?.add(RxBus.listen(RxEvent.Action::class.java).subscribe { action ->
-            when (action.eventType) {
-                RxEventType.PROFILE_UPDATED -> {
-                    setPhoto()
+
+        appDisposable?.add(RxBus.listen(RxEvent.Action::class.java).subscribe({ action ->
+            if (isAdded && activity != null) {
+                requireActivity().runOnUiThread {
+                    when (action.eventType) {
+                        RxEventType.PROFILE_UPDATED -> {
+                            setPhoto()
+                        }
+                        RxEventType.CONTACT_SYNCED_WITH_NETWORK -> {
+                            if (isAdded && isVisible) {
+                                if (rcvAll.adapter == null && adapter == null) {
+                                    showToast("Hogya setup !!", Toast.LENGTH_SHORT)
+                                    setHomeAdapter()
+                                    toggleContactSyncLayout(false)
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        })
+        }, { t: Throwable? -> t?.printStackTrace() }))
+    }
+
+    private fun toggleContactSyncLayout(isVisible: Boolean) {
+        contactSync_layout?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     private fun setPhoto() {
         val profile = SharedPreferenceManager.getUser()
         if (CommonUtil.textIsNotEmpty(profile?.originalAvatar)) {
             ImageManager.loadImage(ivContactImage, profile?.originalAvatar)
-            ivContactImage.visibility = View.VISIBLE
+            ivContactImage?.visibility = View.VISIBLE
         } else {
 //            tvContactPlaceholder.setTextSize(TypedValue.COMPLEX_UNIT_PX, requireContext().resources.getDimensionPixelSize(R.dimen._47ssp).toFloat())
-            tvContactPlaceholder.text = profile?.getInitialsName()
+            tvContactPlaceholder?.text = profile?.getInitialsName()
         }
     }
 
-    private fun setHomeAdapter(homeDataResponse: HomeDataResponse) {
-        adapter = HomeAdapter(requireContext(), homeDataResponse) { it: Any, pos: Int, type: String, it2: Any? ->
+    private fun setHomeAdapter() {
+        val items: ArrayList<HomeDataItem> = arrayListOf()
+        val recentlyConnectedContactList = ContactsHelper.getDBRecentlyConnectedContactList()
+        if (recentlyConnectedContactList.isNotEmpty() && recentlyConnectedContactList.size >= 1) {
+            recentlyListenedRowExists = true
+            items.add(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = recentlyConnectedContactList, false))
+        }
+
+        val availableContacts = ContactsHelper.getAvailableContactList()
+        items.add(HomeDataItem(type = AVAILABLE_CONTACTS, title = "Phone Contacts", contacts = availableContacts, false))
+        adapter = HomeAdapter(requireContext(), HomeDataResponse(items = items, hasMore = false)) { it: Any, pos: Int, type: String, it2: Any? ->
             if (it is Contact) {
                 if (type == AVAILABLE_CONTACTS || type == RECENTLY_CONNECTED_CONTACTS) {
                     ContactsHelper.updateLastConnected(it.phone!!)

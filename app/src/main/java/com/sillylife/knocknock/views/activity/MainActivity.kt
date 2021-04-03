@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -12,6 +14,7 @@ import com.karumi.dexter.PermissionToken
 import com.sillylife.knocknock.MainApplication
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
+import com.sillylife.knocknock.constants.RxEventType
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.helpers.ContactsHelper
@@ -20,6 +23,7 @@ import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.responses.SyncedContactsResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.services.CallbackWrapper
+import com.sillylife.knocknock.services.ContactWatchService
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.AsyncTaskAlternative.executeAsyncTask
 import com.sillylife.knocknock.utils.CommonUtil
@@ -96,13 +100,12 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
             replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
             syncContacts()
 //            Starting service for registering ContactObserver
-//            try {
-//                val intent = Intent(this@MainActivity, ContactWatchService::class.java)
-//                startService(intent)
-//            } catch (e: Exception) {
-//                e.printStackTrace()
-//            }
-
+            try {
+                val intent = Intent(this@MainActivity, ContactWatchService::class.java)
+                startService(intent)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         } else {
             DexterUtil.with(this, Manifest.permission.READ_CONTACTS).setListener(object :
                     DexterUtil.DexterUtilListener {
@@ -188,7 +191,7 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
                                 }
 
                                 override fun onFailure(code: Int, message: String) {
-
+                                    SharedPreferenceManager.disableContactSyncWithNetwork()
                                 }
                             }))
             publishProgress(100)
@@ -196,6 +199,10 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         }, onPostExecute = { it ->
             // runs in Main Thread
             // ... here "it" is a data returned from "doInBackground"
+            SharedPreferenceManager.disableContactSyncWithNetwork()
+            Handler(Looper.getMainLooper()).postDelayed({
+                RxBus.publish(RxEvent.Action(RxEventType.CONTACT_SYNCED_WITH_NETWORK))
+            }, 5000)
             Log.d(TAG, "SyncContacts - onPostExecute - $it")
         }, onProgressUpdate = {
             // runs in Main Thread

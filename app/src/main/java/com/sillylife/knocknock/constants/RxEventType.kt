@@ -2,7 +2,7 @@ package com.sillylife.knocknock.constants
 
 enum class RxEventType {
     PROFILE_UPDATED,
-    ORDER_SWIPED_PROCESSED,
+    CONTACT_SYNCED_WITH_NETWORK,
     REFRESH_HOME,
     PRODUCT_UPDATED,
     PRODUCT_DELETED,
