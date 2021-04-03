@@ -60,14 +60,13 @@ class HomeContactsAdapter(val context: Context,
         when (holder.itemViewType) {
             CONTACTS_VIEW -> {
                 val contact = commonItemList[holder.adapterPosition] as Contact
+                holder.tvContactPlaceholder.text = contact.getInitialsName()
+                holder.tvContactPlaceholder.visibility = View.VISIBLE
                 if (CommonUtil.textIsNotEmpty(contact.image)) {
-                    holder.ivContactImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
-                            ?: throw IllegalArgumentException("Cannot load drawable"))
                     ImageManager.loadImage(holder.ivContactImage, contact.image)
                     holder.ivContactImage.visibility = View.VISIBLE
                     holder.tvContactPlaceholder.visibility = View.INVISIBLE
                 } else {
-                    holder.tvContactPlaceholder.text = contact.getInitialsName()
                     holder.ivContactImage.visibility = View.INVISIBLE
                     holder.tvContactPlaceholder.visibility = View.VISIBLE
                 }
@@ -119,15 +118,23 @@ class HomeContactsAdapter(val context: Context,
 
     override fun onViewRecycled(holder: ViewHolder) {
         super.onViewRecycled(holder)
-        holder.ivContactImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_place_holder_colors)
-                ?: throw IllegalArgumentException("Cannot load drawable"))
+        val contact = commonItemList[holder.adapterPosition] as Contact
+        holder.tvContactPlaceholder.text = contact.getInitialsName()
+        holder.tvContactPlaceholder.visibility = View.VISIBLE
+        if (CommonUtil.textIsNotEmpty(contact.image)) {
+            ImageManager.loadImage(holder.ivContactImage, contact.image)
+            holder.ivContactImage.visibility = View.VISIBLE
+            holder.tvContactPlaceholder.visibility = View.INVISIBLE
+        } else {
+            holder.ivContactImage.visibility = View.INVISIBLE
+            holder.tvContactPlaceholder.visibility = View.VISIBLE
+        }
     }
 
     fun updateRecentlyConnected(contact: Contact) {
         var lastIndex = 0
         for (i in commonItemList.indices) {
-            val a = commonItemList[i]
-            if (a is Contact && a.phone.equals(contact.phone)) {
+            if (commonItemList[i] is Contact && (commonItemList[i] as Contact).phone == contact.phone) {
                 lastIndex = i
                 break
             }
