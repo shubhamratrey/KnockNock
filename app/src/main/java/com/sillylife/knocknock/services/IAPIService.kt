@@ -25,7 +25,8 @@ interface IAPIService {
             @Field("app_instance_id") appInstanceId: String,
             @Field("app_build_number") appBuildNumber: Int,
             @Field("installed_version") installedVersion: String,
-            @Field("fcm_token") fcmToken: String
+            @Field("fcm_token") fcmToken: String,
+            @Field("advertising_id") advertisingId: String
     ): Observable<Response<GenericResponse>>
 
     @FormUrlEncoded

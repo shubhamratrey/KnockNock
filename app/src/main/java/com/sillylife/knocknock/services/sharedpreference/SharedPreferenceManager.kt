@@ -18,6 +18,7 @@ object SharedPreferenceManager {
     private const val APP_LANGUAGE = "app_language"
     private const val PAUSE_NOTIFICATIONS = "pause_notifications"
     private const val KNOCK_TONE = "knock_tone"
+    private const val ADVERTISING_ID = "advertising_id"
 
 
     fun storeFirebaseAuthToken(firebaseAuthToken: String) {
@@ -76,5 +77,13 @@ object SharedPreferenceManager {
 
     fun setKnockTone(url: String) {
         sharedPreferences.setString(KNOCK_TONE, url)
+    }
+
+    fun setAdvertisingId(id: String) {
+        sharedPreferences.setString(ADVERTISING_ID, id)
+    }
+
+    fun getAdvertisingId(): String {
+        return sharedPreferences.getString(ADVERTISING_ID, "") ?: ""
     }
 }

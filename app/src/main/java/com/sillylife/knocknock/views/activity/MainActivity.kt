@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
@@ -44,6 +45,14 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         }
     }
 
+    override fun onAdvertisingIdSuccess(id: String) {
+        SharedPreferenceManager.setAdvertisingId(id)
+    }
+
+    override fun onAdvertisingIdFailure(statusCode: Int, message: String) {
+        Log.d(TAG, "onAdvertisingIdFailure statusCode:$statusCode message:$message")
+    }
+
     val RC_SIGN_IN = 12132
     private val TAG = MainActivity::class.java.simpleName
     private var viewModel: MainActivityViewModel? = null
@@ -62,6 +71,7 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
                 } else {
                     Toast.makeText(this, "Welcome back ${profile?.getFullName()}", Toast.LENGTH_SHORT).show()
                     openHomeFragment()
+                    viewModel?.getAdvertisingId(this)
                 }
             } else {
                 viewModel?.getMe()

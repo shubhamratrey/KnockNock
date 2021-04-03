@@ -167,7 +167,8 @@ object FirebaseAuthUserManager {
                 getAppDisposable().add(
                         MainApplication.getInstance().getAPIService().registerFCM(
                                 BuildConfig.APPLICATION_ID, "android", appInstanceId,
-                                BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME, fcmToken)
+                                BuildConfig.VERSION_CODE, BuildConfig.VERSION_NAME, fcmToken,
+                                SharedPreferenceManager.getAdvertisingId())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeWith(object : CallbackWrapper<Response<GenericResponse>>() {
