@@ -9,21 +9,28 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sillylife.knocknock.R
-import com.sillylife.knocknock.database.DBHelper
+import com.sillylife.knocknock.constants.RxEventType
+import com.sillylife.knocknock.events.RxBus
+import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.models.Contact
+import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.views.adapter.InviteAdapter
+import com.sillylife.knocknock.views.module.InviteModule
+import com.sillylife.knocknock.views.viewmodal.InviteViewModel
+import com.sillylife.knocknock.views.viewmodelfactory.FragmentViewModelFactory
 import kotlinx.android.synthetic.main.fragment_home.rcvAll
 import kotlinx.android.synthetic.main.fragment_invite.*
 
-class InviteFragment : BaseFragment() {
+class InviteFragment : BaseFragment(), InviteModule.APIModuleListener {
 
     companion object {
         val TAG = InviteFragment::class.java.simpleName
@@ -31,6 +38,7 @@ class InviteFragment : BaseFragment() {
     }
 
     private var adapter: InviteAdapter? = null
+    private var viewModel: InviteViewModel? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_invite, container, false)
@@ -38,8 +46,8 @@ class InviteFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        dbHelper = ViewModelProvider(activity!!).get(DBHelper::class.java)
-//        ContactsHelper.updatePhoneContactsToDB()
+        viewModel = ViewModelProvider(this, FragmentViewModelFactory(this@InviteFragment))
+                .get(InviteViewModel::class.java)
         setAdapter()
         setupSearchView()
         toolbar?.setNavigationOnClickListener {
@@ -52,7 +60,12 @@ class InviteFragment : BaseFragment() {
         adapter = InviteAdapter(context = requireContext(), items = contacts,
                 object : InviteAdapter.Listeners {
                     override fun onContactClicked(contact: Contact, position: Int, view: View?) {
-                        showToast(contact.name + contact.phone + " onContactClicked")
+                        if (isAdded) {
+                            if (contact.userPtrId != null) {
+                                viewModel?.ringBell(contact.userPtrId!!)
+                                RxBus.publish(RxEvent.Action(RxEventType.CONTACT_CLICKED, contact))
+                            }
+                        }
                     }
 
                     override fun onInviteClicked(contact: Contact, position: Int, view: View?) {
@@ -155,5 +168,20 @@ class InviteFragment : BaseFragment() {
                 CommonUtil.hideKeyboard(requireContext())
             }
         }
+    }
+
+    override fun onApiFailure(statusCode: Int, message: String) {
+
+    }
+
+    override fun onRingBellApiSuccess(response: GenericResponse) {
+        if (isVisible && response != null) {
+            showToast("Bell Ringed", Toast.LENGTH_SHORT)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel?.onDestroy()
     }
 }

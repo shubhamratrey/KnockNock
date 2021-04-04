@@ -125,14 +125,6 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         replaceFragment(ProfileFragment.newInstance(), ProfileFragment.TAG)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == Constants.GALLERY || requestCode == Constants.AUDIO_LIBRARY) {
-            RxBus.publish(RxEvent.ActivityResult(requestCode, resultCode, data))
-            return
-        }
-    }
-
     fun syncContacts() {
         Log.d(TAG, "SyncContacts - Started")
         CoroutineScope(Dispatchers.IO).executeAsyncTask(onPreExecute = {

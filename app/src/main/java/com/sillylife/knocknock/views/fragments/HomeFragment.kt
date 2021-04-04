@@ -78,12 +78,15 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
                             setPhoto()
                         }
                         RxEventType.CONTACT_SYNCED_WITH_NETWORK -> {
-                            if (isAdded && isVisible) {
-                                if (rcvAll.adapter == null && adapter == null) {
-                                    showToast("Hogya setup !!", Toast.LENGTH_SHORT)
-                                    setHomeAdapter()
-                                    toggleContactSyncLayout(false)
-                                }
+                            if (isAdded && isVisible && rcvAll.adapter == null && adapter == null) {
+                                showToast("Hogya setup !!", Toast.LENGTH_SHORT)
+                                setHomeAdapter()
+                                toggleContactSyncLayout(false)
+                            }
+                        }
+                        RxEventType.CONTACT_CLICKED -> {
+                            if (isAdded && adapter != null && action.items != null && action.items.isNotEmpty() && action.items[0] is Contact) {
+                                onContactClicked(action.items[0] as Contact)
                             }
                         }
                     }
@@ -120,15 +123,7 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
         adapter = HomeAdapter(requireContext(), HomeDataResponse(items = items, hasMore = false)) { it: Any, pos: Int, type: String, it2: Any? ->
             if (it is Contact) {
                 if (type == AVAILABLE_CONTACTS || type == RECENTLY_CONNECTED_CONTACTS) {
-                    ContactsHelper.updateLastConnected(it.phone!!)
-                    if (!recentlyListenedRowExists) {
-                        val contactList: ArrayList<Contact> = ArrayList()
-                        contactList.add(it)
-                        recentlyListenedRowExists = true
-                        adapter?.addRecentlyListenedRow(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = contactList, false))
-                    } else {
-                        adapter?.updateRecentlyConnected(it)
-                    }
+                    onContactClicked(it)
                     if (it.userPtrId != null) {
                         viewModel?.ringBell(it.userPtrId!!)
                     }
@@ -141,6 +136,18 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
         rcvAll?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         ViewCompat.setNestedScrollingEnabled(rcvAll, false)
         rcvAll?.adapter = adapter
+    }
+
+    private fun onContactClicked(it: Contact) {
+        ContactsHelper.updateLastConnected(it.phone!!)
+        if (!recentlyListenedRowExists) {
+            val contactList: ArrayList<Contact> = ArrayList()
+            contactList.add(it)
+            recentlyListenedRowExists = true
+            adapter?.addRecentlyListenedRow(HomeDataItem(type = RECENTLY_CONNECTED_CONTACTS, title = "Recently Connected", contacts = contactList, false))
+        } else {
+            adapter?.updateRecentlyConnected(it)
+        }
     }
 
     override fun onDestroy() {
