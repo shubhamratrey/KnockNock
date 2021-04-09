@@ -16,11 +16,14 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.AppWidgetTarget
+import com.bumptech.glide.request.target.NotificationTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.sillylife.knocknock.MainApplication
 import com.sillylife.knocknock.R
+import com.sillylife.knocknock.utils.svg.GlideApp
 import com.sillylife.knocknock.utils.svg.SvgSoftwareLayerSetter
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -33,24 +36,66 @@ object ImageManager {
 
     fun loadImage(imageView: ImageView, imageUrl: String?) {
         val url = imageUrl ?: ""
-        load(
-                imageView,
-                url,
-                0,
-                getRequestOptions(imageView.drawable),
-                null
-        )
+        load(imageView, url, 0, getRequestOptions(imageView.drawable), null)
+    }
+
+    fun loadImage(target: NotificationTarget, imageUrl: String) {
+        val url = imageUrl ?: ""
+        GlideApp.with(context).asBitmap().load(url).into(target);
+    }
+
+    fun loadImage(imageView: ImageView, resourceId: Int) {
+        load(imageView, null, resourceId, getRequestOptions(resourceId), null)
+    }
+
+    fun loadImage(imageView: ImageView, file: File) {
+        Glide.with(context).setDefaultRequestOptions(getRequestOptions(imageView.drawable)).load(file).into(imageView)
+    }
+
+    fun loadImage(imageView: ImageView, imageUrl: String?, placeHolderId: Int) {
+        val url = imageUrl ?: ""
+        load(imageView, url, placeHolderId, getRequestOptions(placeHolderId), null)
     }
 
     fun loadImageCircular(imageView: ImageView, imageUrl: String?) {
         val url = imageUrl ?: ""
-        load(
-                imageView,
-                url,
-                0,
-                getRequestOptions(imageView.drawable),
-                RequestOptions.circleCropTransform()
-        )
+        load(imageView, url, 0, getRequestOptions(imageView.drawable), RequestOptions.circleCropTransform())
+    }
+
+    fun loadImageCircular(target: NotificationTarget, imageUrl: String) {
+        val url = imageUrl ?: ""
+        GlideApp.with(context).setDefaultRequestOptions(RequestOptions.circleCropTransform())
+                .asBitmap()
+                .load(url)
+                .into(target);
+    }
+
+    fun loadImageCircular(target: AppWidgetTarget, imageUrl: String) {
+        val url = imageUrl ?: ""
+        GlideApp.with(context).setDefaultRequestOptions(RequestOptions.circleCropTransform())
+                .asBitmap()
+                .load(url)
+                .into(target);
+    }
+
+    fun loadImageCircular(imageView: ImageView, file: File) {
+        Glide.with(context).setDefaultRequestOptions(RequestOptions.circleCropTransform()).load(file).into(imageView)
+    }
+
+    fun loadImageCircular(imageView: ImageView, resourceId: Int) {
+        load(imageView, null, resourceId, getRequestOptions(resourceId), RequestOptions.circleCropTransform())
+    }
+
+    fun loadImageCircular(imageView: ImageView, imageUrl: String?, placeHolderId: Int) {
+        val url = imageUrl ?: ""
+        load(imageView, url, placeHolderId, getRequestOptions(placeHolderId), RequestOptions.circleCropTransform())
+    }
+
+    fun loadCircularDrawableUsingHexCode(imageView: ImageView, hex_code: String?) {
+        Glide.with(context)
+                .setDefaultRequestOptions(RequestOptions.circleCropTransform())
+                .load(ColorDrawable(Color.parseColor(hex_code)))
+                .placeholder(R.drawable.ic_place_holder_colors).into(imageView)
     }
 
     fun loadImageBottom(imageView: ImageView, imageUrl: String?, listener: (Boolean) -> Unit) {
@@ -88,64 +133,6 @@ object ImageManager {
                     }
 
                 }).into(imageView)
-    }
-
-    fun loadImage(imageView: ImageView, resourceId: Int) {
-        load(
-                imageView,
-                null,
-                resourceId,
-                getRequestOptions(resourceId),
-                null
-        )
-    }
-
-    fun loadImage(imageView: ImageView, file: File) {
-        Glide.with(context).setDefaultRequestOptions(getRequestOptions(imageView.drawable)).load(file).into(imageView)
-    }
-
-    fun loadCircularImageFile(imageView: ImageView, file: File) {
-        Glide.with(context).setDefaultRequestOptions(RequestOptions.circleCropTransform()).load(file).into(imageView)
-    }
-
-
-    fun loadImageCircular(imageView: ImageView, resourceId: Int) {
-        load(
-                imageView,
-                null,
-                resourceId,
-                getRequestOptions(resourceId),
-                RequestOptions.circleCropTransform()
-        )
-    }
-
-    fun loadImage(imageView: ImageView, imageUrl: String?, placeHolderId: Int) {
-        val url = imageUrl ?: ""
-        load(
-                imageView,
-                url,
-                placeHolderId,
-                getRequestOptions(placeHolderId),
-                null
-        )
-    }
-
-    fun loadImageCircular(imageView: ImageView, imageUrl: String?, placeHolderId: Int) {
-        val url = imageUrl ?: ""
-        load(
-                imageView,
-                url,
-                placeHolderId,
-                getRequestOptions(placeHolderId),
-                RequestOptions.circleCropTransform()
-        )
-    }
-
-    fun loadCircularDrawableUsingHexCode(imageView: ImageView, hex_code: String?) {
-        Glide.with(context)
-                .setDefaultRequestOptions(RequestOptions.circleCropTransform())
-                .load(ColorDrawable(Color.parseColor(hex_code)))
-                .placeholder(R.drawable.ic_place_holder_colors).into(imageView)
     }
 
     @Throws(InterruptedException::class, ExecutionException::class)
