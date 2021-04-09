@@ -3,6 +3,7 @@ package com.sillylife.knocknock.services
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.sillylife.knocknock.constants.HTTPStatus
 import com.sillylife.knocknock.models.RestError
 import io.reactivex.exceptions.UndeliverableException
 import io.reactivex.observers.DisposableObserver
