@@ -2,27 +2,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/appWidgetBackgroundColor"
+    android:layout_gravity="center"
+    android:gravity="top"
     android:padding="@dimen/widget_margin"
     android:theme="@style/ThemeOverlay.KnockNock.AppWidgetContainer">
 
     <TextView
-        android:id="@+id/appwidget_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="8dp"
-        android:background="?attr/appWidgetBackgroundColor"
-        android:contentDescription="appwidget_text"
-        android:text="appwidget_text"
-        android:textColor="?attr/appWidgetTextColor"
-        android:textSize="24sp"
-        android:textStyle="bold|italic" />
+        android:layout_marginStart="20dp"
+        android:fontFamily="@font/notosans_medium"
+        android:text="Recently Knocked" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:layout_marginTop="5dp"
         android:gravity="center"
         android:weightSum="4">
 
@@ -34,8 +31,8 @@
 
             <ImageView
                 android:id="@+id/image1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/alpha_white_solid_circle" />
         </FrameLayout>
@@ -48,8 +45,8 @@
 
             <ImageView
                 android:id="@+id/image2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/alpha_white_solid_circle" />
         </FrameLayout>
@@ -62,8 +59,8 @@
 
             <ImageView
                 android:id="@+id/image3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/alpha_white_solid_circle" />
         </FrameLayout>
@@ -76,12 +73,11 @@
 
             <ImageView
                 android:id="@+id/image4"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/alpha_white_solid_circle" />
         </FrameLayout>
-
 
     </LinearLayout>
 

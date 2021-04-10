@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Handler
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 
-class ContactsObserver : ContentObserver {
+class NewContactAddedObserver : ContentObserver {
     private var context: Context? = null
 
     constructor(handler: Handler?) : super(handler) {}

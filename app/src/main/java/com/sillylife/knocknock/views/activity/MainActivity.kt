@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.karumi.dexter.PermissionToken
 import com.sillylife.knocknock.MainApplication
 import com.sillylife.knocknock.R
-import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.constants.RxEventType
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
@@ -23,7 +22,7 @@ import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.responses.SyncedContactsResponse
 import com.sillylife.knocknock.models.responses.UserResponse
 import com.sillylife.knocknock.services.CallbackWrapper
-import com.sillylife.knocknock.services.ContactWatchService
+import com.sillylife.knocknock.services.NewContactAddedService
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.AsyncTaskAlternative.executeAsyncTask
 import com.sillylife.knocknock.utils.CommonUtil
@@ -101,7 +100,7 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
             syncContacts()
 //            Starting service for registering ContactObserver
             try {
-                val intent = Intent(this@MainActivity, ContactWatchService::class.java)
+                val intent = Intent(this@MainActivity, NewContactAddedService::class.java)
                 startService(intent)
             } catch (e: Exception) {
                 e.printStackTrace()

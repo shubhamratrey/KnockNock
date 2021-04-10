@@ -4,9 +4,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.*
 import android.provider.ContactsContract
-import android.widget.Toast
 
-class ContactWatchService : Service() {
+class NewContactAddedService : Service() {
     private var mServiceLooper: Looper? = null
     private var mServiceHandler: ServiceHandler? = null
 
@@ -24,7 +23,7 @@ class ContactWatchService : Service() {
     private fun startContactObserver() {
         try {
             //Registering contact observer
-            application.contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, ContactsObserver(Handler(Looper.getMainLooper()), applicationContext))
+            application.contentResolver.registerContentObserver(ContactsContract.Contacts.CONTENT_URI, true, NewContactAddedObserver(Handler(Looper.getMainLooper()), applicationContext))
         } catch (e: Exception) {
             e.printStackTrace()
         }

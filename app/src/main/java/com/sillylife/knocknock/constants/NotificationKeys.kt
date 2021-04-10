@@ -15,6 +15,7 @@ object NotificationKeys {
     const val DESCRIPTION = "description"
     const val SUB_TEXT = "sub_text"
     const val NOTIFICATION_ID = "notification_id"
+    const val IS_KNOCK = "is_knock"
     const val IS_SILENT = "is_silent"
     const val BUTTON_LABEL = "button_label"
     const val NOTIFICATION_SOUND = "notification_sound"

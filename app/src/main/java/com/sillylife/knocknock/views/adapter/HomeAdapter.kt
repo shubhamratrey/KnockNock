@@ -136,18 +136,17 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
 
             adapter.setHasStableIds(true)
             if (homeDataItem.type == HomeType.AVAILABLE_CONTACTS) {
-                if (holder.rcvAll.adapter == null) {
+                if (holder.rcvAll.itemDecorationCount == 0) {
                     holder.rcvAll?.addItemDecoration(GridSpacingItemDecoration(4, context.resources.getDimensionPixelSize(R.dimen.dp_20), false))
                 }
                 holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 4)
             } else {
-                if (holder.rcvAll.adapter == null) {
+                if (holder.rcvAll.itemDecorationCount == 0) {
                     holder.rcvAll?.addItemDecoration(GridSpacingItemDecoration(3, context.resources.getDimensionPixelSize(R.dimen.dp_20), false))
                 }
                 holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 3)
             }
             holder.rcvAll?.adapter = adapter
-            holder.rcvAll?.setHasFixedSize(true)
         }
     }
 

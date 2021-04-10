@@ -75,6 +75,7 @@ object ImageManager {
         GlideApp.with(context).setDefaultRequestOptions(RequestOptions.circleCropTransform())
                 .asBitmap()
                 .load(url)
+                .override(480, 342)
                 .into(target);
     }
 

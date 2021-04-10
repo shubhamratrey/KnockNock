@@ -7,7 +7,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
 
     <application
         android:name=".MainApplication"
@@ -50,11 +51,26 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".services.ContactWatchService"
+        <!--   Knocking Services and Receivers     -->
+        <service android:name=".services.KnockNotificationService"
             android:enabled="true"
             android:exported="false"
-            android:process=":KnockNockContactWatchService" />
+            android:process=":KnockNotificationService"/>
+
+        <receiver
+            android:name=".services.KnockCallbackReceiver"
+            android:enabled="true">
+            <intent-filter android:priority="999">
+                <action android:name="ConstantApp.CALL_RECEIVE_ACTION" />
+                <action android:name="ConstantApp.CALL_CANCEL_ACTION"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".services.NewContactAddedService"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":KKNewContactAddedService" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -5,7 +5,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants.RECENTLY_LOWER_LIMIT
@@ -140,10 +139,14 @@ class HomeContactsAdapter(val context: Context,
             }
         }
         if (lastIndex != 0) {
+            commonItemList.remove(contact);
+            commonItemList.add(0, contact);
             notifyItemMoved(lastIndex, 0)
         } else {
-            commonItemList.add(0, contact)
-            notifyItemInserted(0)
+            if (!commonItemList.contains(contact)) {
+                notifyItemInserted(0)
+                commonItemList.add(0, contact)
+            }
         }
     }
 //
