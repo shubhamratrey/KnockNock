@@ -17,11 +17,22 @@ object Constants {
     const val KEY_EVENT_EXTRA = "key_event_extra"
     const val IMMERSIVE_FLAG_TIMEOUT = 500L
     const val RECENTLY_LOWER_LIMIT = 6
+    const val USER_PTR_ID = "userPtrId"
+    const val ACTION_TYPE = "action_type"
     val EXTENSION_WHITELIST = arrayOf("JPG")
 
     interface SocialLinks {
         companion object {
             const val INSTAGRAM = "https://www.instagram.com//"
+            const val FACEBOOK = "https://www.facebook.com/"
+            const val TWITTER = "https://twitter.com/"
+        }
+    }
+
+    interface NotificationActionType {
+        companion object {
+            const val WIDGET_PHOTO_CLICKED = "widget_photo_clicked"
+            const val KNOCK_BACK = "knock_back"
             const val FACEBOOK = "https://www.facebook.com/"
             const val TWITTER = "https://twitter.com/"
         }

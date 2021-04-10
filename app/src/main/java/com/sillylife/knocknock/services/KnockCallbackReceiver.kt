@@ -4,65 +4,41 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.sillylife.knocknock.MainApplication
+import com.sillylife.knocknock.constants.Constants
+import com.sillylife.knocknock.constants.Constants.NotificationActionType
+import com.sillylife.knocknock.constants.Constants.USER_PTR_ID
 import com.sillylife.knocknock.models.responses.GenericResponse
+import com.sillylife.knocknock.utils.CommonUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
 
 class KnockCallbackReceiver : BroadcastReceiver() {
-    var mContext: Context? = null
-    private var appDisposable: AppDisposable? = null
-    override fun onReceive(context: Context, intent: Intent) {
-        mContext = context
-        if (intent.extras != null) {
-            var action: String? = ""
-            action = intent.getStringExtra("ACTION_TYPE")
-            if (action != null && action.equals("WIDGET_PHOTO_CLICKED", ignoreCase = true)) {
-                ringBell(intent.getIntExtra("PROFILE_ID", -1))
-            } else if (action != null && !action.equals("", ignoreCase = true)) {
-                performClickAction(context, action)
-            }
 
-            // Close the notification after the click action is performed.
-            val iclose = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
-            context.sendBroadcast(iclose)
-            context.stopService(Intent(context, KnockNotificationService::class.java))
+    private var appDisposable: AppDisposable? = null
+
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.extras != null) {
+            val action: String? = intent.getStringExtra(Constants.ACTION_TYPE)
+            if (CommonUtil.textIsNotEmpty(action)) {
+                when (action) {
+                    NotificationActionType.WIDGET_PHOTO_CLICKED -> {
+                        ringBell(intent.getIntExtra(USER_PTR_ID, -1), context)
+                    }
+                    NotificationActionType.KNOCK_BACK -> {
+                        ringBell(intent.getIntExtra(USER_PTR_ID, -1), context)
+                    }
+                }
+            } else {
+                // Close the notification after the click action is performed.
+                context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+                context.stopService(Intent(context, KnockNotificationService::class.java))
+            }
         }
     }
 
-    private fun performClickAction(context: Context, action: String) {
-//        if (action.equals("RECEIVE_CALL", ignoreCase = true)) {
-//            if (checkAppPermissions()) {
-//                val intentCallReceive = Intent(mContext, VideoCallActivity::class.java)
-//                intentCallReceive.putExtra("Call", "incoming")
-//                intentCallReceive.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//                mContext!!.startActivity(intentCallReceive)
-//            } else {
-//                val intent = Intent(AppController.getInstance().getContext(), VideoCallRingingActivity::class.java)
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//                intent.putExtra("CallFrom", "call from push")
-//                mContext!!.startActivity(intent)
-//            }
-//        } else if (action.equals("DIALOG_CALL", ignoreCase = true)) {
-//            // show ringing activity when phone is locked
-//            val intent = Intent(AppController.getInstance().getContext(), VideoCallRingingActivity::class.java)
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-//            mContext!!.startActivity(intent)
-//        } else {
-//            context.stopService(Intent(context, KnockingReceiverService::class.java))
-//            val it = Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
-//            context.sendBroadcast(it)
-//        }
-    }
-
-
-    private fun checkAppPermissions(): Boolean {
-        return true
-//        return hasReadPermissions() && hasWritePermissions() && hasCameraPermissions() && hasAudioPermissions()
-    }
-
-    private fun ringBell(profileId: Int) {
+    private fun ringBell(profileId: Int, context: Context) {
         if (profileId == -1) {
             return
         }
@@ -73,30 +49,19 @@ class KnockCallbackReceiver : BroadcastReceiver() {
                 .subscribeWith(object : CallbackWrapper<Response<GenericResponse>>() {
                     override fun onSuccess(t: Response<GenericResponse>) {
                         if (t.isSuccessful && t.body() != null) {
-
+                            // Close the notification after the click action is performed.
+                            context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+                            context.stopService(Intent(context, KnockNotificationService::class.java))
                         }
                     }
 
                     override fun onFailure(code: Int, message: String) {
+                        // Close the notification after the click action is performed.
+                        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+                        context.stopService(Intent(context, KnockNotificationService::class.java))
                     }
                 }))
     }
-
-//    private fun hasAudioPermissions(): Boolean {
-//        return ContextCompat.checkSelfPermission(AppController.getInstance().getContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
-//    }
-//
-//    private fun hasReadPermissions(): Boolean {
-//        return ContextCompat.checkSelfPermission(AppController.getInstance().getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-//    }
-//
-//    private fun hasWritePermissions(): Boolean {
-//        return ContextCompat.checkSelfPermission(AppController.getInstance().getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-//    }
-//
-//    private fun hasCameraPermissions(): Boolean {
-//        return ContextCompat.checkSelfPermission(AppController.getInstance().getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-//    }
 
     private fun getAppDisposable(): AppDisposable {
         if (appDisposable == null) {

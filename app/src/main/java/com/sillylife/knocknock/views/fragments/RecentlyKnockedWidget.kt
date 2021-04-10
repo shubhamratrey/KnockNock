@@ -9,6 +9,8 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.bumptech.glide.request.target.AppWidgetTarget
 import com.sillylife.knocknock.R
+import com.sillylife.knocknock.constants.Constants
+import com.sillylife.knocknock.constants.Constants.NotificationActionType.Companion.WIDGET_PHOTO_CLICKED
 import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.services.KnockCallbackReceiver
 import com.sillylife.knocknock.utils.ImageManager
@@ -34,8 +36,8 @@ class RecentlyKnockedWidget : AppWidgetProvider() {
                         views.setOnClickPendingIntent(R.id.image1,
                                 PendingIntent.getBroadcast(context, 100 + index,
                                         Intent(context, KnockCallbackReceiver::class.java)
-                                                .putExtra("ACTION_TYPE", "WIDGET_PHOTO_CLICKED")
-                                                .putExtra("PROFILE_ID", contact.userPtrId),
+                                                .putExtra(Constants.ACTION_TYPE, WIDGET_PHOTO_CLICKED)
+                                                .putExtra(Constants.USER_PTR_ID, contact.userPtrId),
                                         PendingIntent.FLAG_UPDATE_CURRENT))
                     }
                     1 -> {
@@ -43,8 +45,8 @@ class RecentlyKnockedWidget : AppWidgetProvider() {
                         views.setOnClickPendingIntent(R.id.image2,
                                 PendingIntent.getBroadcast(context, 100 + index,
                                         Intent(context, KnockCallbackReceiver::class.java)
-                                                .putExtra("ACTION_TYPE", "WIDGET_PHOTO_CLICKED")
-                                                .putExtra("PROFILE_ID", contact.userPtrId),
+                                                .putExtra(Constants.ACTION_TYPE, WIDGET_PHOTO_CLICKED)
+                                                .putExtra(Constants.USER_PTR_ID, contact.userPtrId),
                                         PendingIntent.FLAG_UPDATE_CURRENT))
                     }
                     2 -> {
@@ -52,8 +54,8 @@ class RecentlyKnockedWidget : AppWidgetProvider() {
                         views.setOnClickPendingIntent(R.id.image3,
                                 PendingIntent.getBroadcast(context, 100 + index,
                                         Intent(context, KnockCallbackReceiver::class.java)
-                                                .putExtra("ACTION_TYPE", "WIDGET_PHOTO_CLICKED")
-                                                .putExtra("PROFILE_ID", contact.userPtrId),
+                                                .putExtra(Constants.ACTION_TYPE, WIDGET_PHOTO_CLICKED)
+                                                .putExtra(Constants.USER_PTR_ID, contact.userPtrId),
                                         PendingIntent.FLAG_UPDATE_CURRENT))
                     }
                     3 -> {
@@ -61,8 +63,8 @@ class RecentlyKnockedWidget : AppWidgetProvider() {
                         views.setOnClickPendingIntent(R.id.image4,
                                 PendingIntent.getBroadcast(context, 100 + index,
                                         Intent(context, KnockCallbackReceiver::class.java)
-                                                .putExtra("ACTION_TYPE", "WIDGET_PHOTO_CLICKED")
-                                                .putExtra("PROFILE_ID", contact.userPtrId),
+                                                .putExtra(Constants.ACTION_TYPE, WIDGET_PHOTO_CLICKED)
+                                                .putExtra(Constants.USER_PTR_ID, contact.userPtrId),
                                         PendingIntent.FLAG_UPDATE_CURRENT))
                     }
                 }

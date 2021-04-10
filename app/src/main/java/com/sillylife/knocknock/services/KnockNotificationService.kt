@@ -1,129 +1,153 @@
 package com.sillylife.knocknock.services
 
 import android.app.*
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import android.os.IBinder
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.annotation.Nullable
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.request.target.NotificationTarget
 import com.sillylife.knocknock.R
+import com.sillylife.knocknock.constants.Constants
 import com.sillylife.knocknock.constants.NotificationKeys
 import com.sillylife.knocknock.utils.ImageManager
-import java.util.*
+import com.sillylife.knocknock.views.activity.MainActivity
 import java.util.concurrent.atomic.AtomicInteger
 
 
 class KnockNotificationService : Service() {
 
+    companion object {
+        private const val TAG_FOREGROUND_SERVICE = "KN_Service"
+    }
+
     private val mNotificationId = AtomicInteger(0)
 
     @Nullable
     override fun onBind(intent: Intent?): IBinder? {
-        return null
+        throw UnsupportedOperationException("Not yet implemented")
+    }
+
+
+    override fun onCreate() {
+        super.onCreate()
+        Log.d(TAG_FOREGROUND_SERVICE, "My foreground service onCreate().")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val data = intent?.extras!!
-        val mTitle = if (data[NotificationKeys.TITLE] != null) data[NotificationKeys.TITLE].toString() else ""
-        val mDescription = if (data[NotificationKeys.DESCRIPTION] != null) data[NotificationKeys.DESCRIPTION].toString() else ""
-        val mSubtext = if (data[NotificationKeys.SUB_TEXT] != null) data[NotificationKeys.SUB_TEXT].toString() else ""
-        val imageUrl = if (data[NotificationKeys.IMAGE] != null) data[NotificationKeys.IMAGE].toString() else ""
-        val uriString = if (data[NotificationKeys.URI] != null) data[NotificationKeys.URI].toString() else ""
-        val channelId = if (data[NotificationKeys.N_CHANNEL_ID] != null) data[NotificationKeys.N_CHANNEL_ID].toString() else "KnockChannelId"
-        val channelName = if (data[NotificationKeys.N_CHANNEL_NAME] != null) data[NotificationKeys.N_CHANNEL_NAME].toString() else "KnockChannelName"
-        val mLayoutType = data[NotificationKeys.LAYOUT_TYPE]
-
-        val mNotificationId: String = data.get(NotificationKeys.NOTIFICATION_ID).toString()
-        val notificationId = 120
-        try {
-            val receiveCallAction = Intent(applicationContext, KnockCallbackReceiver::class.java)
-            receiveCallAction.putExtra("ConstantApp.CALL_RESPONSE_ACTION_KEY", "ConstantApp.CALL_RECEIVE_ACTION")
-            receiveCallAction.putExtra("ACTION_TYPE", "RECEIVE_CALL")
-            receiveCallAction.putExtra("NOTIFICATION_ID", notificationId)
-            receiveCallAction.action = "RECEIVE_CALL"
-            val cancelCallAction = Intent(applicationContext, KnockCallbackReceiver::class.java)
-            cancelCallAction.putExtra("ConstantApp.CALL_RESPONSE_ACTION_KEY", "ConstantApp.CALL_CANCEL_ACTION")
-            cancelCallAction.putExtra("ACTION_TYPE", "CANCEL_CALL")
-            cancelCallAction.putExtra("NOTIFICATION_ID", notificationId)
-            cancelCallAction.action = "CANCEL_CALL"
-            val callDialogAction = Intent(applicationContext, KnockCallbackReceiver::class.java)
-            callDialogAction.putExtra("ACTION_TYPE", "DIALOG_CALL")
-            callDialogAction.putExtra("NOTIFICATION_ID", notificationId)
-            callDialogAction.action = "DIALOG_CALL"
-            val receiveCallPendingIntent = PendingIntent.getBroadcast(applicationContext, 1200, receiveCallAction, PendingIntent.FLAG_UPDATE_CURRENT)
-            val cancelCallPendingIntent = PendingIntent.getBroadcast(applicationContext, 1201, cancelCallAction, PendingIntent.FLAG_UPDATE_CURRENT)
-            val callDialogPendingIntent = PendingIntent.getBroadcast(applicationContext, 1202, callDialogAction, PendingIntent.FLAG_UPDATE_CURRENT)
-            if (Build.VERSION.SDK_INT >= VERSION_CODES.O) {
-                try {
-                    val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH)
-                    channel.description = "Call Notifications"
-                    channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-                    Objects.requireNonNull(applicationContext.getSystemService(NotificationManager::class.java)).createNotificationChannel(channel)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-            val mRemoteViews = RemoteViews(packageName, R.layout.custom_notification_small)
-            mRemoteViews.setTextViewText(R.id.notif_title, mTitle)
-            mRemoteViews.setTextViewText(R.id.notif_content, mDescription)
-
-//            val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-//            val hungupPendingIntent = PendingIntent.getBroadcast(this, 0, hungupIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-//            val answerPendingIntent = PendingIntent.getActivity(this, 0, answerIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-//
-//            customView.setOnClickPendingIntent(R.id.btnAnswer, answerPendingIntent)
-//            customView.setOnClickPendingIntent(R.id.btnDecline, hungupPendingIntent)
-
-
-            var notificationBuilder: NotificationCompat.Builder? = null
-            // Uri ringUri= Settings.System.DEFAULT_RINGTONE_URI;
-            notificationBuilder = NotificationCompat.Builder(this, channelId)
-                    .setFullScreenIntent(callDialogPendingIntent, true)
-//                    .setContentTitle(mTitle)
-//                        .setContent(mRemoteViews)
-                    .setCustomHeadsUpContentView(mRemoteViews)
-//                        .setCustomContentView(mRemoteViews)
-//                        .setCustomBigContentView(mRemoteViews)
-                    .setContentText("Incoming Audio Call")
-                    .setSmallIcon(android.R.drawable.ic_btn_speak_now)
-                    .setPriority(NotificationCompat.PRIORITY_MAX)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setCategory(NotificationCompat.CATEGORY_CALL)
-//                        .addAction(android.R.drawable.ic_menu_call, "Reject call", cancelCallPendingIntent)
-//                        .addAction(android.R.drawable.ic_menu_call, "Answer call", receiveCallPendingIntent)
-                    .setAutoCancel(true) //.setSound(ringUri)
-//                        .setOngoing(true)
-            var incomingCallNotification: Notification? = null
-            if (notificationBuilder != null) {
-                incomingCallNotification = notificationBuilder.build()
-            }
-
-            ImageManager.loadImageCircular(NotificationTarget(applicationContext, R.id.notif_icon, mRemoteViews, incomingCallNotification, notificationId), imageUrl)
-
-            startForeground(notificationId, incomingCallNotification)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        startForegroundServices(intent)
         return START_STICKY
     }
 
     override fun onDestroy() {
+        stopForegroundService()
         super.onDestroy() // release your media player here
     }
+
+    /* Used to build and start foreground service. */
+    private fun startForegroundServices(intent: Intent?) {
+        Log.d(TAG_FOREGROUND_SERVICE, "Start foreground service.")
+
+        val data = intent?.extras!!
+        val mChannelId = if (data[NotificationKeys.N_CHANNEL_ID] != null) data[NotificationKeys.N_CHANNEL_ID].toString() else "KnockChannelId"
+        val mChannelName = if (data[NotificationKeys.N_CHANNEL_NAME] != null) data[NotificationKeys.N_CHANNEL_NAME].toString() else "KnockChannelName"
+        val mTitle = if (data[NotificationKeys.TITLE] != null) data[NotificationKeys.TITLE].toString() else ""
+        val mDescription = if (data[NotificationKeys.DESCRIPTION] != null) data[NotificationKeys.DESCRIPTION].toString() else ""
+        val mUsername = if (data[NotificationKeys.USERNAME] != null) data[NotificationKeys.USERNAME].toString() else "user"
+        val mUserPtrId = if (data[NotificationKeys.USER_PTR_ID] != null) data[NotificationKeys.USER_PTR_ID].toString().toInt() else null
+        val mSubtext = if (data[NotificationKeys.SUB_TEXT] != null) data[NotificationKeys.SUB_TEXT].toString() else ""
+        val imageUrl = if (data[NotificationKeys.IMAGE] != null) data[NotificationKeys.IMAGE].toString() else ""
+        val uriString = if (data[NotificationKeys.URI] != null) data[NotificationKeys.URI].toString() else ""
+        val mLayoutType = if (data[NotificationKeys.LAYOUT_TYPE] != null) data[NotificationKeys.LAYOUT_TYPE].toString() else null
+        val mNotificationId = if (data[NotificationKeys.LAYOUT_TYPE] != null) data.get(NotificationKeys.NOTIFICATION_ID).toString() else 244
+        val notificationId = this.mNotificationId.incrementAndGet()
+
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        val stackBuilder = TaskStackBuilder.create(this)
+        stackBuilder.addNextIntentWithParentStack(Intent(this, MainActivity::class.java))
+        val resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+
+
+        val mRemoteHeadUpViews = RemoteViews(packageName, R.layout.notification_headsup)
+        mRemoteHeadUpViews.setTextViewText(R.id.headsup_title, mTitle)
+        mRemoteHeadUpViews.setTextViewText(R.id.headsup_desc, mDescription)
+        mRemoteHeadUpViews.setTextViewText(R.id.headsup_userrname, "New Knock • @" + mUsername)
+//        mRemoteHeadUpViews.setTextViewText(R.id.headsup_userrname, SpannableStringBuilder().append("New Knock • @").append(mUsername))
+
+
+        val headsupPendingIntent = PendingIntent.getBroadcast(applicationContext, 1200,
+                Intent(applicationContext, KnockCallbackReceiver::class.java)
+                        .putExtra(Constants.ACTION_TYPE, Constants.NotificationActionType.KNOCK_BACK)
+                        .putExtra(Constants.USER_PTR_ID, mUserPtrId)
+                        .setAction("DIALOG_CALL"),
+                PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val fullscreenPendingIntent = PendingIntent.getActivity(applicationContext, 1202,
+                Intent(applicationContext, MainActivity::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT)
+        mRemoteHeadUpViews.setOnClickPendingIntent(R.id.headsup_knockback_tv, headsupPendingIntent)
+
+
+        // Create notification builder.
+        val notificationBuilder: NotificationCompat.Builder? = NotificationCompat.Builder(this, mChannelId)
+
+        // Make head-up notification.
+        notificationBuilder?.setFullScreenIntent(PendingIntent.getActivity(this, 0, Intent(), 0), true)
+        notificationBuilder?.setContentIntent(fullscreenPendingIntent)
+//        notificationBuilder.setContent(mRemoteViews)
+        notificationBuilder?.setCustomHeadsUpContentView(mRemoteHeadUpViews)
+//        notificationBuilder.setCustomContentView(mRemoteViews)
+//        notificationBuilder.setCustomBigContentView(mRemoteViews)
+        notificationBuilder?.setContentText("Incoming Audio Call")
+//        notificationBuilder?.setContentTitle(mTitle)
+        notificationBuilder?.priority = NotificationCompat.PRIORITY_MAX
+        notificationBuilder?.setDefaults(Notification.DEFAULT_ALL)
+        notificationBuilder?.setCategory(NotificationCompat.CATEGORY_CALL)
+        notificationBuilder?.setAutoCancel(true)
+        notificationBuilder?.setSmallIcon(R.drawable.ic_launcher_background)
+//        notificationBuilder?.setSound(ringUri)
+        notificationBuilder?.setOngoing(true)
+        var notification: Notification? = null
+        if (notificationBuilder != null) {
+            notification = notificationBuilder.build()
+        }
+
+        ImageManager.loadImageCircular(NotificationTarget(applicationContext, R.id.headsup_icon, mRemoteHeadUpViews, notification, notificationId), imageUrl)
+
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.O && notification != null) {
+            val channel = NotificationChannel(mChannelId, mChannelName, NotificationManager.IMPORTANCE_HIGH)
+            channel.lightColor = Color.BLUE
+            channel.description = "Call Notifications"
+            channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            channel.enableLights(true)
+            channel.enableVibration(true)
+            val manager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(channel)
+
+            // Build the notification.
+            val notificationManager = NotificationManagerCompat.from(this)
+            notificationManager.notify(1, notification)
+            // Start foreground service.
+            startForeground(1, notification)
+        } else {
+            // Build the notification and start foreground service.
+            startForeground(1, notification)
+        }
+    }
+
+    private fun stopForegroundService() {
+        Log.d(TAG_FOREGROUND_SERVICE, "Stop foreground service.")
+
+        // Stop foreground service and remove the notification.
+        stopForeground(true)
+
+        // Stop the foreground service.
+        stopSelf()
+    }
 }
-
-
-//from users.models import *
-//from helpers.notification_helper import NotificationHelper
-//user_app_info = UserAppInfo.objects.select_related('profile').filter(profile_id=6,is_active=True).latest('created_on')
-//NotificationHelper.send_push_notification(data={
-//    'image': '',
-//    'title': "yoyoyo",
-//    'description': 'Click here to more info.',
-//    'uri': '',
-//    'is_knock': "True",
-//    'n_channel_priority': "1"
-//}, fcm_ids=[user_app_info.fcm_token])

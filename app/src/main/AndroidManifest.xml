@@ -54,7 +54,7 @@
         <!--   Knocking Services and Receivers     -->
         <service android:name=".services.KnockNotificationService"
             android:enabled="true"
-            android:exported="false"
+            android:exported="true"
             android:process=":KnockNotificationService"/>
 
         <receiver

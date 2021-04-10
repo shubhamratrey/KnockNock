@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.InputType
 import android.text.Selection
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -118,6 +119,7 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
                 } else {
                     etUsername.setText("@")
                 }
+                etUsername.inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
             }
             else -> {
                 toolbar.navigationIcon = null
