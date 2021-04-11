@@ -21,10 +21,20 @@ data class Contact(
         @SerializedName("username") var username: String? = null,
         @SerializedName("phone") var phone: String? = null,
         @SerializedName("image") var image: String? = null,
+        @SerializedName("lat") var lat: String? = null,
+        @SerializedName("long") var long: String? = null,
         @SerializedName("last_connected") var lastConnected: Date? = null,
         @SerializedName("has_invited") var hasInvited: Boolean? = false,
         @SerializedName("available_on_platform") var availableOnPlatform: Boolean? = false,
 ) : Parcelable {
+
+    fun getLatLong(): LatLng? {
+        return if (lat != null && long != null) {
+            LatLng(lat?.toDouble()!!, long?.toDouble()!!)
+        } else {
+            null
+        }
+    }
 
     fun lastConnectedDateString(): String {
         if (lastConnected == null)
