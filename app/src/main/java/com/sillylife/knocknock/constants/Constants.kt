@@ -18,6 +18,8 @@ object Constants {
     const val IMMERSIVE_FLAG_TIMEOUT = 500L
     const val RECENTLY_LOWER_LIMIT = 6
     const val USER_PTR_ID = "userPtrId"
+    const val LATITUDE = "latitude"
+    const val LONGITUDE = "longitude"
     const val ACTION_TYPE = "action_type"
     val EXTENSION_WHITELIST = arrayOf("JPG")
 
@@ -29,12 +31,11 @@ object Constants {
         }
     }
 
-    interface NotificationActionType {
+    interface CallbackActionType {
         companion object {
             const val WIDGET_PHOTO_CLICKED = "widget_photo_clicked"
             const val KNOCK_BACK = "knock_back"
-            const val FACEBOOK = "https://www.facebook.com/"
-            const val TWITTER = "https://twitter.com/"
+            const val UPDATE_LOCATION = "update_location"
         }
     }
 

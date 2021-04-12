@@ -17,7 +17,6 @@ import android.webkit.MimeTypeMap
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.annotation.RequiresApi
-import com.google.android.gms.common.internal.ConnectionErrorMessages.getAppName
 import com.sillylife.knocknock.R
 import okhttp3.ResponseBody
 import java.io.*
@@ -27,23 +26,27 @@ import java.util.*
 
 object FileUtils {
     val DOCUMENTS_DIR = "documents"
+
     // configured android:authorities in AndroidManifest (https://developer.android.com/reference/android/support/v4/content/FileProvider)
     val AUTHORITY = "YOUR_AUTHORITY.provider"
     val HIDDEN_PREFIX = "."
+
     /**
      * TAG for log messages.
      */
     internal val TAG = "FileUtils"
     private val DEBUG = false // Set to true to enable logging
+
     /**
      * File and folder comparator. TODO Expose sorting option method
      */
     var sComparator: Comparator<File> = Comparator { f1, f2 ->
         // Sort alphabetically by lower case, which is much cleaner
         f1.name.toLowerCase().compareTo(
-            f2.name.toLowerCase()
+                f2.name.toLowerCase()
         )
     }
+
     /**
      * File (not directories) filter.
      */
@@ -52,6 +55,7 @@ object FileUtils {
         // Return files only (not directories) and skip hidden files
         file.isFile && !fileName.startsWith(HIDDEN_PREFIX)
     }
+
     /**
      * Folder (directories) filter.
      */
@@ -66,7 +70,7 @@ object FileUtils {
 
     val availableSpaceInMB: Long
         get() {
-            if(isExternalStorageAvailable && !isExternalStorageReadOnly && Environment.getExternalStorageDirectory().exists()){
+            if (isExternalStorageAvailable && !isExternalStorageReadOnly && Environment.getExternalStorageDirectory().exists()) {
                 val SIZE_KB = 1024L
                 val SIZE_MB = SIZE_KB * SIZE_KB
                 var availableSpace = -1L
@@ -154,8 +158,8 @@ object FileUtils {
 
                 // Construct path without file name.
                 var pathwithoutname = filepath.substring(
-                    0,
-                    filepath.length - filename.length
+                        0,
+                        filepath.length - filename.length
                 )
                 if (pathwithoutname.endsWith("/")) {
                     pathwithoutname = pathwithoutname.substring(0, pathwithoutname.length - 1)
@@ -245,8 +249,8 @@ object FileUtils {
      * @return The value of the _data column, which is typically a file path.
      */
     fun getDataColumn(
-        context: Context, uri: Uri?, selection: String?,
-        selectionArgs: Array<String>?
+            context: Context, uri: Uri?, selection: String?,
+            selectionArgs: Array<String>?
     ): String? {
 
         var cursor: Cursor? = null
@@ -260,10 +264,9 @@ object FileUtils {
                     DatabaseUtils.dumpCursor(cursor)
 
                 val columnIndex = cursor.getColumnIndex(column)
-                if(columnIndex > -1){
+                if (columnIndex > -1) {
                     return cursor.getString(columnIndex)
-                }
-                else {
+                } else {
                     return null
                 }
             }
@@ -291,14 +294,14 @@ object FileUtils {
 
         if (DEBUG)
             Log.d(
-                "$TAG File -",
-                "Authority: " + uri.authority +
-                    ", Fragment: " + uri.fragment +
-                    ", Port: " + uri.port +
-                    ", Query: " + uri.query +
-                    ", Scheme: " + uri.scheme +
-                    ", Host: " + uri.host +
-                    ", Segments: " + uri.pathSegments.toString()
+                    "$TAG File -",
+                    "Authority: " + uri.authority +
+                            ", Fragment: " + uri.fragment +
+                            ", Port: " + uri.port +
+                            ", Query: " + uri.query +
+                            ", Scheme: " + uri.scheme +
+                            ", Host: " + uri.host +
+                            ", Segments: " + uri.pathSegments.toString()
             )
 
         val isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
@@ -326,11 +329,11 @@ object FileUtils {
                 }
 
                 val contentUriPrefixesToTry =
-                    arrayOf("content://downloads/public_downloads", "content://downloads/my_downloads")
+                        arrayOf("content://downloads/public_downloads", "content://downloads/my_downloads")
 
                 for (contentUriPrefix in contentUriPrefixesToTry) {
                     val contentUri =
-                        ContentUris.withAppendedId(Uri.parse(contentUriPrefix), java.lang.Long.valueOf(id!!))
+                            ContentUris.withAppendedId(Uri.parse(contentUriPrefix), java.lang.Long.valueOf(id!!))
                     try {
                         val path = getDataColumn(context, contentUri, null, null)
                         if (!CommonUtil.textIsEmpty(path)) {
@@ -685,6 +688,10 @@ object FileUtils {
         return directory
     }
 
+    private fun getAppName(context: Context): String {
+        return "KnockNock"
+    }
+
     fun isEnoughSpaceAvailable(currentFileLength: Long): Boolean {
         val spaceAvailable = availableSpaceInMB
         val kb = calculateFileSizeInKb(currentFileLength)
@@ -694,7 +701,7 @@ object FileUtils {
 
     fun checkAndGetFile(audioFile: Uri?, context: Context): Uri? {
         var file = File(audioFile.toString())
-        if (audioFile != null && File(audioFile?.path).path.split("/")[1].contains("root_path")){
+        if (audioFile != null && File(audioFile?.path).path.split("/")[1].contains("root_path")) {
             file = File(File(audioFile?.path).path.removePrefix("/root_path"))
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && audioFile != null) {
@@ -708,9 +715,9 @@ object FileUtils {
         }
     }
 
-    fun getPublicAlbumStorageDir(context:Context): File? {
+    fun getPublicAlbumStorageDir(context: Context): File? {
         val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), context.getString(
-            R.string.app_name))
+                R.string.app_name))
         if (file.mkdirs()) {
 
         }

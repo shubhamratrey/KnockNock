@@ -290,9 +290,8 @@ class LoginFragment : BaseFragment(), LoginFragmentModule.IModuleListener {
     override fun onGetMeApiSuccess(response: UserResponse) {
         if (isAdded) {
             if (requireActivity() is MainActivity) {
-                (requireActivity() as MainActivity).syncContacts()
+                (requireActivity() as MainActivity).openHomeFragment()
             }
-            replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
         }
     }
 

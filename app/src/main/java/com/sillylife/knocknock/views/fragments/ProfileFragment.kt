@@ -182,9 +182,8 @@ class ProfileFragment : BaseFragment(), ProfileModule.IModuleListener {
             }
             else -> {
                 if (requireActivity() is MainActivity) {
-                    (requireActivity() as MainActivity).syncContacts()
+                    (requireActivity() as MainActivity).openHomeFragment()
                 }
-                replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
             }
         }
     }

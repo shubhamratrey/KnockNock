@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.sillylife.knocknock.R
@@ -27,6 +26,7 @@ import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.ImageManager
 import com.sillylife.knocknock.views.activity.MainActivity
+import com.sillylife.knocknock.views.activity.OnScreenDialogActivity
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -43,11 +43,10 @@ class FirebaseMessaging : FirebaseMessagingService() {
         val isNotificationEnabled = !SharedPreferenceManager.isNotificationsPaused()
         if (remoteMessage.data != null && isNotificationEnabled) {
             if (remoteMessage.data[NotificationKeys.IS_KNOCK].toBoolean()) {
-//                startActivity(Intent(requireContext(), WebViewActivity::class.java).putExtra(BundleConstants.WEB_URL, url))
-                val serviceIntent = Intent(applicationContext, KnockNotificationService::class.java)
-                val mBundle = Bundle()
-                serviceIntent.putExtras(remoteMessage.toIntent())
-                ContextCompat.startForegroundService(applicationContext, serviceIntent)
+                applicationContext.startActivity(Intent(applicationContext, OnScreenDialogActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        .putExtras(remoteMessage.toIntent()))
             } else {
                 showNotification(remoteMessage.data, applicationContext)
             }
