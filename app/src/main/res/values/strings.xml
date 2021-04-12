@@ -50,5 +50,6 @@
     <string name="submit_otp">Submit OTP</string>
     <string name="pause_notifications">Pause Notifications</string>
     <string name="knock_tone">Knock Tone</string>
+    <string name="knock_back">Knock back</string>
 
 </resources>

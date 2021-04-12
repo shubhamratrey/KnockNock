@@ -24,6 +24,10 @@ object MapDbEntities {
             entity.phone = contacts.phone
         if (CommonUtil.textIsNotEmpty(contacts.image))
             entity.image = contacts.image
+        if (CommonUtil.textIsNotEmpty(contacts.lat))
+            entity.lat = contacts.lat
+        if (CommonUtil.textIsNotEmpty(contacts.image))
+            entity.long = contacts.long
         if (contacts.hasInvited != null)
             entity.hasInvited = contacts.hasInvited
         if (contacts.availableOnPlatform != null)
@@ -39,6 +43,8 @@ object MapDbEntities {
         contact.name = contactsEntity.name
         contact.phone = contactsEntity.phone
         contact.image = contactsEntity.image
+        contact.lat = contactsEntity.lat
+        contact.long = contactsEntity.long
         contact.userPtrId = contactsEntity.userPtrId
         contact.hasInvited = contactsEntity.hasInvited
         contact.availableOnPlatform = contactsEntity.availableOnPlatform

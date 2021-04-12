@@ -18,6 +18,8 @@ data class ContactsEntity(
         @ColumnInfo(name = "username") var username: String? = null,
         var phone: String? = null,
         var image: String? = null,
+        var lat: String? = null,
+        var long: String? = null,
         @ColumnInfo(name = "last_connected") var lastConnected: Long? = null,
         @ColumnInfo(name = "has_invited") var hasInvited: Boolean? = false,
         @ColumnInfo(name = "available_on_platform") var availableOnPlatform: Boolean? = false,

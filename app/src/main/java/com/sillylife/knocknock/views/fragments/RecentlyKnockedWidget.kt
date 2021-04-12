@@ -10,7 +10,7 @@ import android.widget.RemoteViews
 import com.bumptech.glide.request.target.AppWidgetTarget
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants
-import com.sillylife.knocknock.constants.Constants.NotificationActionType.Companion.WIDGET_PHOTO_CLICKED
+import com.sillylife.knocknock.constants.Constants.CallbackActionType.Companion.WIDGET_PHOTO_CLICKED
 import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.services.KnockCallbackReceiver
 import com.sillylife.knocknock.utils.ImageManager

@@ -1,7 +1,6 @@
 package com.sillylife.knocknock.services
 
 import com.sillylife.knocknock.constants.NetworkConstants
-import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.models.responses.HomeDataResponse
 import com.sillylife.knocknock.models.responses.SyncedContactsResponse
@@ -51,6 +50,12 @@ interface IAPIService {
             @Field("profile_id") profileId: Int,
     ): Observable<Response<GenericResponse>>
 
+    @FormUrlEncoded
+    @POST("${NetworkConstants.V1}/knocknock/me/update-location/")
+    fun updateLocation(
+            @Field("lat") lat: String,
+            @Field("long") long: String,
+    ): Observable<Response<GenericResponse>>
 
     @FormUrlEncoded
     @POST("${NetworkConstants.V1}/knocknock/sync-contacts/")

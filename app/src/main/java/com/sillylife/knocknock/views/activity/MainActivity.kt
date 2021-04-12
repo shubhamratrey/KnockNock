@@ -93,15 +93,14 @@ class MainActivity : BaseActivity(), MainActivityModule.IModuleListener {
         }
     }
 
-    private fun openHomeFragment() {
+    fun openHomeFragment() {
         //Checking permission
         if (ActivityCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             replaceFragment(HomeFragment.newInstance(), HomeFragment.TAG)
             syncContacts()
 //            Starting service for registering ContactObserver
             try {
-                val intent = Intent(this@MainActivity, NewContactAddedService::class.java)
-                startService(intent)
+                startService(Intent(this@MainActivity, NewContactAddedService::class.java))
             } catch (e: Exception) {
                 e.printStackTrace()
             }
