@@ -62,6 +62,8 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
         }
 
 
+//        activity?.startService(Intent(requireContext(), WhereAbouts::class.java))
+
         cvContactImage?.setOnClickListener {
             addFragment(SettingsFragment.newInstance(), SettingsFragment.TAG)
         }

@@ -9,6 +9,7 @@ import com.sillylife.knocknock.constants.Constants.CallbackActionType
 import com.sillylife.knocknock.constants.Constants.LATITUDE
 import com.sillylife.knocknock.constants.Constants.LONGITUDE
 import com.sillylife.knocknock.constants.Constants.USER_PTR_ID
+import com.sillylife.knocknock.helpers.ContactsHelper
 import com.sillylife.knocknock.models.responses.GenericResponse
 import com.sillylife.knocknock.utils.CommonUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,6 +20,7 @@ import retrofit2.Response
 class KnockCallbackReceiver : BroadcastReceiver() {
 
     private var appDisposable: AppDisposable? = null
+    private val TAG = KnockCallbackReceiver::class.java.simpleName
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.extras != null) {
@@ -30,6 +32,9 @@ class KnockCallbackReceiver : BroadcastReceiver() {
                     }
                     CallbackActionType.UPDATE_LOCATION -> {
                         updateLocation(intent.getStringExtra(LATITUDE)!!, intent.getStringExtra(LONGITUDE)!!)
+                    }
+                    CallbackActionType.SYNC_CONTACTS -> {
+                        syncContacts(context)
                     }
                 }
             }
@@ -76,6 +81,10 @@ class KnockCallbackReceiver : BroadcastReceiver() {
                         // Close the notification after the click action is performed.
                     }
                 }))
+    }
+
+    private fun syncContacts(context: Context) {
+        ContactsHelper.syncContactsWithNetwork(TAG, context)
     }
 
     private fun getAppDisposable(): AppDisposable {

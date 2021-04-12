@@ -36,6 +36,7 @@ object Constants {
             const val WIDGET_PHOTO_CLICKED = "widget_photo_clicked"
             const val KNOCK_BACK = "knock_back"
             const val UPDATE_LOCATION = "update_location"
+            const val SYNC_CONTACTS = "sync_contacts"
         }
     }
 

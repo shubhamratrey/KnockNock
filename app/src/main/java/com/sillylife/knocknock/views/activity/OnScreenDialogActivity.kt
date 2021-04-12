@@ -3,7 +3,10 @@ package com.sillylife.knocknock.views.activity
 import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import android.view.Window
 import android.view.WindowManager
@@ -82,9 +85,7 @@ class OnScreenDialogActivity : AppCompatActivity() {
     }
 
     private fun dismissPopup() {
-        Handler(Looper.myLooper()!!).postDelayed({
-            this.finish()
-        }, 505)
+        this.finish()
     }
 
     private fun initiateVibration() {

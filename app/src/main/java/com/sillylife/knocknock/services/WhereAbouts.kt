@@ -8,10 +8,15 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
+import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.core.app.ActivityCompat
+import com.sillylife.knocknock.constants.Constants
 
 
 class WhereAbouts : Service(), LocationListener {
@@ -25,6 +30,8 @@ class WhereAbouts : Service(), LocationListener {
         // The minimum time between updates in milliseconds
         const val MIN_TIME_BW_UPDATES = (1000 * 60 * 1).toLong() // 1 minute
     }
+
+    private var wakeLock: PowerManager.WakeLock? = null
 
     // Declaring a Location Manager
     private var locationManager: LocationManager? = null
@@ -45,16 +52,19 @@ class WhereAbouts : Service(), LocationListener {
 
     override fun onCreate() {
         Log.d(TAG, "onCreate Start")
-        if (locationManager == null) {
-            locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        }
-        setBestProvider()
+        val pm = getSystemService(POWER_SERVICE) as PowerManager
+
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "$TAG:mywakelocktag")
         Log.d(TAG, "onCreate End")
         super.onCreate()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand Start")
+        if (locationManager == null) {
+            locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        }
+        setBestProvider()
         // checking network states and permissions
         if (canGetLocation && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             locationManager?.requestLocationUpdates(mBestLocationProvider, MIN_TIME_BW_UPDATES, LOCATION_CHANGE_THRESHOLD.toFloat(), this)
@@ -72,13 +82,14 @@ class WhereAbouts : Service(), LocationListener {
         if (locationManager != null) {
             locationManager!!.removeUpdates(this)
         }
+        wakeLock?.release()
         Log.d(TAG, "onDestroy End")
         super.onDestroy()
     }
 
-
     // Location methods
-    override fun onLocationChanged(location: Location) {
+    override fun onLocationChanged(@Nullable location: Location) {
+        Log.d(TAG, "onLocationChanged Start")
         var updateLocation = false
         if (this.location != null) {
             updateLocation = location.distanceTo(this.location) >= LOCATION_CHANGE_THRESHOLD
@@ -86,14 +97,23 @@ class WhereAbouts : Service(), LocationListener {
         if (updateLocation) {
             this.location = location
         }
+        if (isConnectingToInternet(this)) {
+            Log.d(TAG, "onLocationChanged ${location.latitude} ${location.longitude}")
+            sendBroadcast(Intent(this, KnockCallbackReceiver::class.java)
+                    .putExtra(Constants.ACTION_TYPE, Constants.CallbackActionType.UPDATE_LOCATION)
+                    .putExtra(Constants.LATITUDE, location.latitude)
+                    .putExtra(Constants.LONGITUDE, location.longitude)
+            )
+        }
+        Log.d(TAG, "onLocationChanged End")
     }
 
-    override fun onProviderEnabled(provider: String) {
+    override fun onProviderEnabled(@NonNull provider: String) {
         setBestProvider()
         super.onProviderEnabled(provider)
     }
 
-    override fun onProviderDisabled(provider: String) {
+    override fun onProviderDisabled(@NonNull provider: String) {
         setBestProvider()
         super.onProviderDisabled(provider)
     }
@@ -119,5 +139,16 @@ class WhereAbouts : Service(), LocationListener {
             }
         }
         this.canGetLocation = isGPSEnabled || isNetworkEnabled
+    }
+
+    private fun isConnectingToInternet(_context: Context): Boolean {
+        val connectivity:ConnectivityManager? = _context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectivity != null) {
+            val info = connectivity.allNetworkInfo
+            if (info != null) for (i in info.indices) if (info[i].state == NetworkInfo.State.CONNECTED) {
+                return true
+            }
+        }
+        return false
     }
 }

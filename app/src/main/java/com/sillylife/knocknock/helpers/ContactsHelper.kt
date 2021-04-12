@@ -1,8 +1,11 @@
 package com.sillylife.knocknock.helpers
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.os.Handler
+import android.os.Looper
 import android.provider.ContactsContract
 import android.util.Log
 import android.util.LongSparseArray
@@ -10,18 +13,32 @@ import androidx.annotation.RequiresPermission
 import androidx.core.app.ActivityCompat
 import com.sillylife.knocknock.MainApplication
 import com.sillylife.knocknock.constants.Constants.RECENTLY_LOWER_LIMIT
+import com.sillylife.knocknock.constants.RxEventType
 import com.sillylife.knocknock.database.MapDbEntities
 import com.sillylife.knocknock.database.entities.ContactsEntity
+import com.sillylife.knocknock.events.RxBus
+import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.models.Contact
+import com.sillylife.knocknock.models.responses.SyncedContactsResponse
+import com.sillylife.knocknock.services.AppDisposable
+import com.sillylife.knocknock.services.CallbackWrapper
+import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
+import com.sillylife.knocknock.utils.AsyncTaskAlternative.executeAsyncTask
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.PhoneNumberUtils.getPhoneNumberWithCountryCode
 import com.sillylife.knocknock.utils.PhoneNumberUtils.isValid
 import com.sillylife.knocknock.utils.TimeUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import retrofit2.Response
 
 object ContactsHelper {
 
     private val context = MainApplication.getInstance()
     val mContactsDao = context.getKnockNockDatabase()?.contactsDao()
+    private var appDisposable: AppDisposable? = null
 
     @RequiresPermission(allOf = [Manifest.permission.READ_CONTACTS])
     fun getPhoneContactList(): ArrayList<Contact> {
@@ -128,8 +145,8 @@ object ContactsHelper {
         mContactsDao?.updateContactInvited(true, phone)
     }
 
-    fun updateSomeData(availableOnPlatform: Boolean, image: String, username: String, userPtrId: Int, phone: String) {
-        mContactsDao?.updateSomeData(availableOnPlatform, image, username, userPtrId, phone)
+    fun updateSomeData(availableOnPlatform: Boolean, image: String, username: String, userPtrId: Int, phone: String, lat: String?, long: String?) {
+        mContactsDao?.updateSomeData(availableOnPlatform, image, username, userPtrId, phone, lat, long)
     }
 
     fun updatePhoneContactsToDB() {
@@ -188,6 +205,104 @@ object ContactsHelper {
             contactList.add(MapDbEntities.contactToEntity(item))
         }
         return contactList
+    }
+
+    fun syncContactsWithNetwork(TAG: String, context: Context) {
+        Log.d(TAG, "SyncContacts - Started")
+        CoroutineScope(Dispatchers.IO).executeAsyncTask(onPreExecute = {
+            Log.d(TAG, "SyncContacts - onPreExecute")
+        }, doInBackground = { publishProgress: suspend (progress: Int) -> Unit ->
+            Log.d(TAG, "SyncContacts - doInBackground - $publishProgress")
+            publishProgress(10) // call `publishProgress` to update progress, `onProgressUpdate` will be called
+
+            ContactsHelper.updatePhoneContactsToDB()
+            val dbContacts = ContactsHelper.getDBPhoneContactList()
+
+            val phoneNumberList: ArrayList<String> = arrayListOf()
+            dbContacts.forEach {
+                phoneNumberList.add(it.phone!!)
+            }
+            publishProgress(50)
+            getAppDisposable().add(
+                    MainApplication.getInstance().getAPIService().syncContacts(phoneNumberList)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(object : CallbackWrapper<Response<SyncedContactsResponse>>() {
+                                override fun onSuccess(t: Response<SyncedContactsResponse>) {
+                                    if (t.isSuccessful && t.body() != null) {
+                                        val response = t.body()!!
+                                        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                                            return
+                                        }
+                                        val availableContacts = response.contacts!!
+                                        for (availableContact in availableContacts) {
+                                            var toUpdate = false
+                                            var tempContact = Contact()
+                                            for (dbContact in dbContacts) {
+                                                if (availableContact.phone == dbContact.phone) {
+                                                    toUpdate = true
+                                                    tempContact = dbContact.copy()
+                                                    break
+                                                }
+                                            }
+                                            if (toUpdate) {
+                                                if (CommonUtil.textIsNotEmpty(availableContact.image)) {
+                                                    tempContact.image = availableContact.image
+                                                }
+                                                if (CommonUtil.textIsNotEmpty(availableContact.username)) {
+                                                    tempContact.username = availableContact.username
+                                                }
+                                                if (CommonUtil.textIsNotEmpty(availableContact.lat)) {
+                                                    tempContact.lat = availableContact.lat
+                                                }
+                                                if (CommonUtil.textIsNotEmpty(availableContact.long)) {
+                                                    tempContact.long = availableContact.long
+                                                }
+                                                if (availableContact.userPtrId != null) {
+                                                    tempContact.userPtrId = availableContact.userPtrId
+                                                }
+                                                if (availableContact.availableOnPlatform != null) {
+                                                    tempContact.availableOnPlatform = availableContact.availableOnPlatform
+                                                }
+                                                ContactsHelper.updateSomeData(availableOnPlatform = tempContact.availableOnPlatform!!,
+                                                        image = tempContact.image!!,
+                                                        userPtrId = tempContact.userPtrId!!,
+                                                        phone = tempContact.phone!!,
+                                                        username = tempContact.username!!,
+                                                        lat = tempContact.lat,
+                                                        long = tempContact.long)
+                                            }
+                                        }
+                                    }
+                                }
+
+                                override fun onFailure(code: Int, message: String) {
+                                    SharedPreferenceManager.disableContactSyncWithNetwork()
+                                }
+                            }))
+            publishProgress(100)
+            "Result" // send data to "onPostExecute"
+        }, onPostExecute = { it ->
+            // runs in Main Thread
+            // ... here "it" is a data returned from "doInBackground"
+            SharedPreferenceManager.disableContactSyncWithNetwork()
+            Handler(Looper.getMainLooper()).postDelayed({
+                RxBus.publish(RxEvent.Action(RxEventType.CONTACT_SYNCED_WITH_NETWORK))
+            }, 5000)
+            Log.d(TAG, "SyncContacts - onPostExecute - $it")
+        }, onProgressUpdate = {
+            // runs in Main Thread
+            // ... here "it" contains progress
+            Log.d(TAG, "SyncContacts - onProgressUpdate - $it")
+        })
+        Log.d(TAG, "SyncContacts - Ended")
+    }
+
+    private fun getAppDisposable(): AppDisposable {
+        if (appDisposable == null) {
+            appDisposable = AppDisposable()
+        }
+        return appDisposable as AppDisposable
     }
 
 }
