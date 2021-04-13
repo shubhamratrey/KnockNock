@@ -2,20 +2,20 @@
     <string name="app_name">KnockNock</string>
 
     <plurals name="day_count_string">
-        <item quantity="one">%d day ago</item>
-        <item quantity="other">%d days ago</item>
+        <item quantity="one">%dd</item>
+        <item quantity="other">%dd</item>
     </plurals>
     <plurals name="hour_count_string">
-        <item quantity="one">%d hour ago</item>
-        <item quantity="other">%d hours ago</item>
+        <item quantity="one">%dh</item>
+        <item quantity="other">%dh</item>
     </plurals>
     <plurals name="min_count_string">
-        <item quantity="one">%d min ago</item>
-        <item quantity="other">%d mins ago</item>
+        <item quantity="one">%dm</item>
+        <item quantity="other">%dm</item>
     </plurals>
     <plurals name="second_count_string">
-        <item quantity="one">%d second ago</item>
-        <item quantity="other">%d seconds ago</item>
+        <item quantity="one">%ds</item>
+        <item quantity="other">%ds</item>
     </plurals>
 
     <string name="just_now">Just now</string>

@@ -80,31 +80,38 @@ object TimeUtils {
         val diffMinutes = diff / (60 * 1000) % 60
         val diffHours = diff / (60 * 60 * 1000)
         val diffInDays = ((dt2.time - dt1.time) / (1000 * 60 * 60 * 24)).toInt()
-        resultString = if (diffInDays > 7) {
-            val sdf = SimpleDateFormat("MMM d, yyyy")
-            sdf.format(dt1)
-        } else if (diffInDays >= 1) {
-            context.resources
-                    .getQuantityString(R.plurals.day_count_string,
-                            diffInDays,
-                            diffInDays)
-        } else if (diffHours >= 1) {
-            context.resources
-                    .getQuantityString(R.plurals.hour_count_string,
-                            diffHours.toInt(),
-                            diffHours.toInt())
-        } else if (diffMinutes >= 1) {
-            context.resources
-                    .getQuantityString(R.plurals.min_count_string,
-                            diffMinutes.toInt(),
-                            diffMinutes.toInt())
-        } else if (diffSeconds >= 1) {
-            context.resources
-                    .getQuantityString(R.plurals.second_count_string,
-                            diffSeconds.toInt(),
-                            diffSeconds.toInt())
-        } else {
-            context.getString(R.string.just_now)
+        resultString = when {
+            diffInDays > 7 -> {
+                val sdf = SimpleDateFormat("MMM d, yyyy")
+                sdf.format(dt1)
+            }
+            diffInDays >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.day_count_string,
+                                diffInDays,
+                                diffInDays)
+            }
+            diffHours >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.hour_count_string,
+                                diffHours.toInt(),
+                                diffHours.toInt())
+            }
+            diffMinutes >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.min_count_string,
+                                diffMinutes.toInt(),
+                                diffMinutes.toInt())
+            }
+            diffSeconds >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.second_count_string,
+                                diffSeconds.toInt(),
+                                diffSeconds.toInt())
+            }
+            else -> {
+                context.getString(R.string.just_now)
+            }
         }
         return resultString
     }
@@ -202,10 +209,6 @@ object TimeUtils {
     }
 
     fun getTimeAgo(timestamp: String): String? {
-        val SECOND_MILLIS = 1000
-        val MINUTE_MILLIS = 60 * SECOND_MILLIS
-        val HOUR_MILLIS = 60 * MINUTE_MILLIS
-        val DAY_MILLIS = 24 * HOUR_MILLIS
         var time = timestamp.toLong()
         if (time < 1000000000000L) {
             // if timestamp given in seconds, convert to millis
@@ -216,22 +219,12 @@ object TimeUtils {
             return null
         }
         val diff = now - time
+        val diffSeconds = diff / 1000 % 60
+        val diffMinutes = diff / (60 * 1000) % 60
+        val diffHours = diff / (60 * 60 * 1000)
+        val diffInDays = ((now - time) / (1000 * 60 * 60 * 24)).toInt()
         return when {
-            diff < MINUTE_MILLIS -> {
-                context.getString(R.string.just_now)
-            }
-            diff < 50 * MINUTE_MILLIS -> {
-                context.resources
-                        .getQuantityString(R.plurals.min_count_string,
-                                diff.toInt() / MINUTE_MILLIS,
-                                diff.toInt() / MINUTE_MILLIS)
-            }
-            diff < 24 * HOUR_MILLIS -> {
-                context.resources.getQuantityString(R.plurals.hour_count_string,
-                        diff.toInt() / HOUR_MILLIS,
-                        diff.toInt() / HOUR_MILLIS)
-            }
-            else -> {
+            diffInDays > 7 -> {
                 val myDate = Date(time)
                 val calendar: Calendar = GregorianCalendar()
                 calendar.time = myDate
@@ -240,6 +233,33 @@ object TimeUtils {
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val monthString = DateFormatSymbols().shortMonths[month - 1]
                 "$monthString $day, $year"
+            }
+            diffInDays >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.day_count_string,
+                                diffInDays,
+                                diffInDays)
+            }
+            diffHours >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.hour_count_string,
+                                diffHours.toInt(),
+                                diffHours.toInt())
+            }
+            diffMinutes >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.min_count_string,
+                                diffMinutes.toInt(),
+                                diffMinutes.toInt())
+            }
+            diffSeconds >= 1 -> {
+                context.resources
+                        .getQuantityString(R.plurals.second_count_string,
+                                diffSeconds.toInt(),
+                                diffSeconds.toInt())
+            }
+            else -> {
+                context.getString(R.string.just_now)
             }
         }
     }

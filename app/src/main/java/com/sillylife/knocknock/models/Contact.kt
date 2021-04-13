@@ -26,6 +26,7 @@ data class Contact(
         @SerializedName("last_connected") var lastConnected: Date? = null,
         @SerializedName("has_invited") var hasInvited: Boolean? = false,
         @SerializedName("available_on_platform") var availableOnPlatform: Boolean? = false,
+        @SerializedName("has_knocked") var hasKnocked: Boolean? = false,
 ) : Parcelable {
 
     fun getLatLong(): LatLng? {

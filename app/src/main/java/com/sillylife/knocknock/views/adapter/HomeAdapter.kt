@@ -145,6 +145,7 @@ class HomeAdapter(val context: Context, val response: HomeDataResponse, val list
                     holder.rcvAll?.addItemDecoration(GridSpacingItemDecoration(3, context.resources.getDimensionPixelSize(R.dimen.dp_20), false))
                 }
                 holder.rcvAll?.layoutManager = WrapContentGridLayoutManager(context, 3)
+                adapter.setHasStableIds(false)
             }
             holder.rcvAll?.adapter = adapter
         }

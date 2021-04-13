@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sillylife.knocknock.R
 import com.sillylife.knocknock.constants.Constants.RECENTLY_LOWER_LIMIT
@@ -70,13 +71,24 @@ class HomeContactsAdapter(val context: Context,
                     holder.tvContactPlaceholder.visibility = View.VISIBLE
                 }
 
+                if (contact.hasKnocked != null && contact.hasKnocked!!) {
+                    holder.cvContactImage.strokeColor = ContextCompat.getColor(context, R.color.coral);
+                    holder.cvContactImage.strokeWidth = context.resources.getDimensionPixelSize(R.dimen._2sdp)
+                } else {
+                    holder.cvContactImage.strokeColor = ContextCompat.getColor(context, R.color.silver_sand);
+                    holder.cvContactImage.strokeWidth = 0
+                }
+                holder.cvContactImage.invalidate()
+
                 holder.tvPrimaryText?.text = contact.name?.split(' ')!![0]
-                holder.tvSecondaryText?.text = contact.lastConnectedDateString()
+                if (homeDataItem.type == RECENTLY_CONNECTED_CONTACTS) {
+                    holder.tvSecondaryText?.text = contact.lastConnectedDateString()
+                    holder.tvSecondaryText.visibility = View.VISIBLE
+                } else {
+                    holder.tvSecondaryText.visibility = View.GONE
+                }
 
                 holder.containerView.setOnClickListener {
-//                    if (contact.availableOnPlatform != null && contact.availableOnPlatform!!) {
-//                        listener.onContactClicked(contact, position, holder.containerView)
-//                    }
                     listener.onContactClicked(contact, position, holder.containerView)
                 }
 
@@ -142,10 +154,17 @@ class HomeContactsAdapter(val context: Context,
             commonItemList.remove(contact);
             commonItemList.add(0, contact);
             notifyItemMoved(lastIndex, 0)
+            notifyItemChanged(0, contact)
         } else {
-            if (!commonItemList.contains(contact)) {
+//            if (!commonItemList.contains(contact)) {
+//                notifyItemInserted(0)
+//                commonItemList.add(0, contact)
+//            }
+            if (commonItemList.size > 0 && (commonItemList[lastIndex] as Contact).phone != contact.phone) {
                 notifyItemInserted(0)
                 commonItemList.add(0, contact)
+            } else {
+                notifyItemChanged(0, contact)
             }
         }
     }

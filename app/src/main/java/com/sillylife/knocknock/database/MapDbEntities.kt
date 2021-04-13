@@ -45,6 +45,7 @@ object MapDbEntities {
         contact.image = contactsEntity.image
         contact.lat = contactsEntity.latitude
         contact.long = contactsEntity.longitude
+        contact.username = contactsEntity.username
         contact.userPtrId = contactsEntity.userPtrId
         contact.hasInvited = contactsEntity.hasInvited
         contact.availableOnPlatform = contactsEntity.availableOnPlatform

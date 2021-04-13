@@ -47,6 +47,8 @@ class FirebaseMessaging : FirebaseMessagingService() {
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                         .putExtras(remoteMessage.toIntent()))
+                remoteMessage.data[NotificationKeys.N_CHANNEL_PRIORITY] = 1.toString()
+                showNotification(remoteMessage.data, applicationContext)
             } else {
                 showNotification(remoteMessage.data, applicationContext)
             }

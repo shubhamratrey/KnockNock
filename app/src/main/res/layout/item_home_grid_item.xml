@@ -28,12 +28,13 @@
         android:id="@+id/tvSecondaryText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
         android:ellipsize="end"
+        android:fontFamily="@font/notosans_regular"
+        android:gravity="center"
         android:maxLines="1"
-        android:textSize="@dimen/_12ssp"
+        android:textSize="@dimen/_10ssp"
         android:visibility="gone"
-        tools:text="Just Now" />
-
+        tools:text="Just Now"
+        tools:visibility="visible" />
 
 </LinearLayout>

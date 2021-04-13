@@ -14,6 +14,7 @@ import com.sillylife.knocknock.constants.RxEventType
 import com.sillylife.knocknock.events.RxBus
 import com.sillylife.knocknock.events.RxEvent
 import com.sillylife.knocknock.helpers.ContactsHelper
+import com.sillylife.knocknock.managers.FirebaseAuthUserManager
 import com.sillylife.knocknock.models.Contact
 import com.sillylife.knocknock.models.HomeDataItem
 import com.sillylife.knocknock.models.responses.GenericResponse
@@ -22,6 +23,7 @@ import com.sillylife.knocknock.services.AppDisposable
 import com.sillylife.knocknock.services.sharedpreference.SharedPreferenceManager
 import com.sillylife.knocknock.utils.CommonUtil
 import com.sillylife.knocknock.utils.ImageManager
+import com.sillylife.knocknock.utils.TimeUtils
 import com.sillylife.knocknock.views.adapter.HomeAdapter
 import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.AVAILABLE_CONTACTS
 import com.sillylife.knocknock.views.adapter.HomeAdapter.Companion.HomeType.Companion.RECENTLY_CONNECTED_CONTACTS
@@ -142,6 +144,7 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
 
     private fun onContactClicked(it: Contact) {
         ContactsHelper.updateLastConnected(it.phone!!)
+        it.lastConnected = TimeUtils.nowDate
         if (!recentlyListenedRowExists) {
             val contactList: ArrayList<Contact> = ArrayList()
             contactList.add(it)
@@ -159,7 +162,9 @@ class HomeFragment : BaseFragment(), HomeFragmentModule.APIModuleListener {
     }
 
     override fun onApiFailure(statusCode: Int, message: String) {
-
+        if (isAdded && statusCode == 400) {
+            FirebaseAuthUserManager.retrieveIdToken(true)
+        }
     }
 
     override fun onRingBellApiSuccess(response: GenericResponse) {

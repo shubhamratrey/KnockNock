@@ -75,6 +75,9 @@ object FirebaseAuthUserManager {
                     firebaseTokenRefreshHandler?.postDelayed(firebaseTokenRefreshRunnable, timeDiff)
                 }
                 SharedPreferenceManager.storeFirebaseAuthToken(task.result!!.token!!)
+                if (refresh) {
+                    registerFCMToken()
+                }
             }
         }
     }
